@@ -1,5 +1,5 @@
-=== TDD Progress ===
-Contributors: tddewey
+=== TDD Progress Bar ===
+Contributors: taylorde
 Donate link: http://websitesthatdontsuck/contact
 Tags: progress, github
 Requires at least: 3.2.1
@@ -10,7 +10,7 @@ A progress bar plugin solution.
 
 == Description ==
 
-TDD Progress allows you to track the progress of multiple projects. Actually, as many as you'd like. To make this easier, it can query the Github API to calculate a %complete -- or you can put in a manual percentage.
+TDD Progress Bar allows you to track the progress of multiple projects. Actually, as many as you'd like. To make this easier, it can query the Github API to calculate a %complete -- or you can put in a manual percentage.
 
 A cool and unique feature is the ability to race multiple projects at once.
 
@@ -32,3 +32,8 @@ function my_deregister_tdd_pb_styles() {
 
 = .1 =
 The first version
+
+== Upgrade Notice ==
+
+= .1 =
+Yes, you should totally upgrade to the first version released...
