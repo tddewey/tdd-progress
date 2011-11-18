@@ -1,6 +1,6 @@
 === TDD Progress Bar ===
 Contributors: taylorde
-Donate link: http://websitesthatdontsuck/contact
+Donate link: http://websitesthatdontsuck.com/contact
 Tags: progress, shortcode
 Requires at least: 3.2.1
 Tested up to: 3.2.1
@@ -12,14 +12,16 @@ A progress bar plugin solution.
 
 TDD Progress Bar allows you to track the progress of multiple projects. Actually, as many as you'd like. A cool feature is the ability to "race" multiple projects at once. Progress bars are managed in the admin side and displayed using shortcode. Oh, and did I mention it has a very pretty animation?
 
-This project uses some cutting-edge CSS3 to make things look cooler like drop shadow, inner-shadow, border-radius, etc. If it doesn't look right in your browser first, consider upgrading, second: let me know what browser you're using to see if I want to consider support. Things should degrade gracefully for non-cutting edge browsers (although IE6 is still going to look like crap no matter what you do).
-
 == Screenshots ==
 1. A Progress Bar "race"
 2. Progress Bar entry screen
 3. A solo Progress Bar
 
 Unfortunately screenshots don't really capture how cool these look while animating...
+
+== Frequently Asked Questions ==
+= It doesn't look right.. =
+This project uses some cutting-edge CSS3 to make things look cooler like drop shadow, inner-shadow, border-radius, etc. If it doesn't look right in your browser first, consider upgrading, second: let me know what browser you're using to see if I want to consider support. Things should degrade gracefully for non-cutting edge browsers (although IE6 is still going to look like crap no matter what you do). You're welcome to write your own CSS to override what I've already written (or un-check "Default Styles" on the settings page and roll-yer-own).
 
 == Installation ==
 
