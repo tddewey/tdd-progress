@@ -4,7 +4,7 @@ Donate link: http://websitesthatdontsuck.com/contact
 Tags: progress, shortcode
 Requires at least: 3.2.1
 Tested up to: 3.2.1
-Stable tag: .1
+Stable tag: 0.1.1
 
 A progress bar plugin solution.
 
@@ -41,10 +41,16 @@ Note that "id" and "ids" are interchangeable
 
 == Changelog ==
 
+= 1.1 =
+* Left some debugging code for the advanced debug bar in the script. Have to remove it to make this thing work.
+
 = .1 =
 The first version
 
 == Upgrade Notice ==
+
+= 1.1 =
+* Blocking bugfix. Plugin won't work unless you upgrade
 
 = .1 =
 Yes, you should totally upgrade to the first version released...

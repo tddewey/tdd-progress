@@ -3,7 +3,7 @@
 Plugin Name: TDD Progress Bars
 Plugin URI: http://github.com/tddewey/tdd-progress
 Description: Manage and display progress bars
-Version 0.1
+Version 0.1.1
 Author: Taylor D. Dewey
 Author URI: http://websitesthatdontsuck.com
 Licence: GPLv3
@@ -162,8 +162,6 @@ function tdd_pb_shortcode($args){
 	
 	//count if this is a race (more than one progress bar being displayed)
 	$race = ( count( $idsarr ) > 1 ) ? 'race' : '';
-	dbgx_trace_var( count($idsarr),  'count' );
-	dbgx_trace_var( $idsarr );
 	//Load up the $return var with our progress bar container
 	$return = '<div class="tdd_pb_global_container '. $race .' '.$args["class"].'" style="width:'.strip_tags($args["width"]).'">';
 	
