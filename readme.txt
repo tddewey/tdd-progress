@@ -1,7 +1,7 @@
 === TDD Progress Bar ===
 Contributors: taylorde
 Donate link: http://websitesthatdontsuck/contact
-Tags: progress, github
+Tags: progress, shortcode
 Requires at least: 3.2.1
 Tested up to: 3.2.1
 Stable tag: .1
@@ -10,23 +10,32 @@ A progress bar plugin solution.
 
 == Description ==
 
-TDD Progress Bar allows you to track the progress of multiple projects. Actually, as many as you'd like. To make this easier, it can query the Github API to calculate a %complete -- or you can put in a manual percentage.
+TDD Progress Bar allows you to track the progress of multiple projects. Actually, as many as you'd like. A cool feature is the ability to "race" multiple projects at once. Progress bars are managed in the admin side and displayed using shortcode. Oh, and did I mention it has a very pretty animation?
 
-A cool and unique feature is the ability to race multiple projects at once.
+This project uses some cutting-edge CSS3 to make things look cooler like drop shadow, inner-shadow, border-radius, etc. If it doesn't look right in your browser first, consider upgrading, second: let me know what browser you're using to see if I want to consider support. Things should degrade gracefully for non-cutting edge browsers (although IE6 is still going to look like crap no matter what you do).
+
+== Screenshots ==
+1. A Progress Bar "race"
+2. Progress Bar entry screen
+3. A solo Progress Bar
+
+Unfortunately screenshots don't really capture how cool these look while animating...
 
 == Installation ==
 
 Standard plugin installation procedures apply.
 
-This plugin does use some CSS which is inserted into `<head>`. This action can be disabled by putting the following code into functions.php although it will probably look bad (you're welcome to put the CSS elsewhere though, or just conditionally include it.
+== Usage ==
+In the menus, you'll see a new menu for "Progress Bars" which is what you'll use to add and manage progress bars. There's also an area here for settings, but honestly if you never touch them, things will work fine.
 
-`<?php
-add_action( 'wp_print_styles', 'my_deregister_tdd_pb_styles', 100 );
-function my_deregister_tdd_pb_styles() {
-	wp_deregister_style('tdd_pb_styles');
-}
-?>
-`
+After configuring a progress bar, insert it anywhere you'd like with shortcode.
+
+* Simple example: `[progress id=32]`
+* Race multiple bars: `[progress id=32,35,54]`
+* Set the bar's width: `[progress ids=12,33 width="25%"]`
+* Align Center: `[progress ids=4 width="50%" class="aligncenter"]`
+
+Note that "id" and "ids" are interchangeable
 
 == Changelog ==
 

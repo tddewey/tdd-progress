@@ -1,0 +1,128 @@
+.tdd_pb_global_container {
+	max-width:900px;
+	width:400px;
+}
+
+.tdd_pb_bar_container {
+	position:relative;
+	background-color:#333;
+	overflow:hidden;
+	height: 50px;
+	border:1px solid black;
+
+	box-shadow:inset 0 0 4px #000000;
+
+	border-top-right-radius: 15px 100px;
+	border-bottom-right-radius: 15px 100px;
+}
+
+.red {
+	background-position-y:0;
+	}
+
+.race .red {
+	background-position-y:-12px;
+	}
+
+.orange {
+	background-position-y:-50px;
+	}
+
+.race .orange {
+	background-position-y:-62px;
+	}
+
+.yellow {
+	background-position-y:-100px;
+	}
+
+.race .yellow {
+	background-position-y:-112px;
+	}
+
+.green {
+	background-position-y:-150px;
+	}
+
+.race .green {
+	background-position-y:-162px;
+	}
+
+.teal {
+	background-position-y:-200px;
+	}
+
+.race .teal {
+	background-position-y:-212px;
+	}
+
+.lightblue {
+	background-position-y:-250px;
+	}
+
+.race .lightblue {
+	background-position-y:-262px;
+	}
+
+.blue {
+	background-position-y:-300px;
+	}
+
+.race .blue {
+	background-position-y:-312px;
+	}
+
+.purple {
+	background-position-y:-350px;
+	}
+
+.race .purple {
+	background-position-y:-362px;
+	}
+
+.fuchsia {
+	background-position-y:-400px;
+	}
+	
+.race .fuchsia {
+	background-position-y:-415px;
+	}
+
+.strawberry {
+	background-position-y:-450px;
+	}
+	
+.race .strawberry {
+	background-position-y:-415px;
+	}
+
+.tdd_pb_bar {
+	background-image:url(../images/bars.png);
+	width:0;
+	height:100%;
+	box-shadow: 1px 0 4px #000;
+	z-index:2;
+	
+	border-top-right-radius: 15px 100px;
+	border-bottom-right-radius: 15px 100px;
+}
+
+.race .tdd_pb_bar_container {
+	height:25px;
+	}
+
+.race .tdd_pb_bar_container .numbers {
+	font-size:15px;
+	margin-top:4px;
+	}
+
+.numbers {
+	text-shadow:-1px -1px 1px #000;
+	font-size:30px;
+	margin-top:7px;
+	margin-right:10px;
+	color:#ececec;
+	position:absolute;
+	right:0;
+	line-height:1em;
+}
