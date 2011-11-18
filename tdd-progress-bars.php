@@ -14,7 +14,6 @@ Licence: GPLv3
 			- animate (on/off) - default=on
 			- use default CSS (on/off) - default=on
 			- bar background-color - default=#333;
-			- container background-color - default=#ccc;
 			- display percentage - default=true
 			- percentage color - default=#ececec;
 		
@@ -122,7 +121,7 @@ add_action( 'init', 'tdd_pb_register_post_type' );
 * Set up admin menus
 */
 function tdd_pb_admin_menu(){
-	add_submenu_page( 'edit.php?post_type=tdd_pb', 'TDD Progress Bars - Settings', 'Settings', 'manage_options', 'tdd-pb-admin-settings-menu', 'tdd_pb_view_settings' );
+	add_submenu_page( 'edit.php?post_type=tdd_pb', 'TDD Progress Bars - Settings', 'Settings', 'manage_options',  __FILE__, 'tdd_pb_view_settings' );
 }
 add_action( 'admin_menu', 'tdd_pb_admin_menu' );
 
@@ -143,7 +142,8 @@ include plugin_dir_path( __FILE__ ). 'inc/admin.php';
 */
 
 function tdd_pb_shortcode($args){
-	
+	$tdd_pb_options = get_option( 'tdd_pb_options');
+
 	$args = shortcode_atts( array(
 		'id' => '',
 		'ids' => '',
@@ -179,7 +179,10 @@ function tdd_pb_shortcode($args){
 		$color = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_color', true ) );
 		//if no color, define a default
 		$color = (!$color) ? 'red' : $color;
-		$return .= '<div title="'.get_the_title() .'" class="tdd_pb_bar_container"><div class="numbers">'. $percentage .'%</div>';
+		$return .= '<div title="'.get_the_title() .'" class="tdd_pb_bar_container" style="background-color: #'. $tdd_pb_options["bar_background_color"] .'">';
+		if ($tdd_pb_options['display_percentage']){
+			$return .= '<div class="numbers" style="color: #'.$tdd_pb_options["percentage_color"].'">'. $percentage .'%</div>';
+		}
 		$return .= '<div class="tdd_pb_bar '. $color .'" style="width:'. $percentage .'%"></div></div>';
 	
 	endwhile;

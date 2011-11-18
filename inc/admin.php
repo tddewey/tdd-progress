@@ -107,47 +107,86 @@ $tdd_pb_options = get_option( 'tdd_pb_options');
 <div class="wrap">
 	<?php screen_icon( 'plugins' ); ?>
 	<h2>TDD Progress Bars</h2>
-
-	<form method="post" action="">
-	<h3>Scripts & Styles</h3>
-	<p>The following two boxes allow you to stop including the animation javascript and the default CSS on each page load. It's highly suggested that you don't turn off the Default CSS option unless you have a replacement in mind. The Animate Bars option can be turned off freely if you'd prefer the bars didn't have that cool animation (or you want to save HTTP requests).</p>
-	<table class="form-table">
-		<tr valign="top">
-			<th scope="row"><label for="animate">Animate Bars</label></th>
-			<td><input name="animate" type="checkbox" <?php checked( $tdd_pb_options['animate'], true ); ?> > <br />
-			<small>This script depends on jQuery, so it will ensure that is loaded as well</small>
-			</td>
-		</tr>
-		<tr valign="top">
-			<th scope="row"><label for="default_css">Use Default CSS</label></th>
-			<td><input name="default_css" type="checkbox" <?php checked( $tdd_pb_options['default_css'], true ); ?> ></td>
-		</tr>
-	</table>
-	<h3>Percentage Displays</h3>
-	<p>By default, the percentage progress is displayed in the bar. This allows you to optionally turn that off and/or set the color of the text</p>
-	<table class="form-table">
-		<tr valign="top">
-			<th scope="row"><label for="display_percentage">Display Percentage</label></th>
-			<td><input name="display_percentage" type="checkbox" <?php checked( $tdd_pb_options['display_percentage'], true ); ?> ></td>
-		</tr>
-		<tr valign="top">
-			<th scope="row"><label for="percentage_color">Color of Percentage Text</label></th>
-			<td>#<input name="percentage_color" type="text" maxlength="6" size="6" value="<?php echo esc_attr( $tdd_pb_options['percentage_color'] ); ?>"></td>
-		</tr>
-	</table>
-	<table class="form-table">
-		<tr valign="top">
-			<th scope="row"><label for="bar_background_color">Bar Background Color</label></th>
-			<td>#<input name="bar_background_color" type="text" maxlength="6" size="6" value="<?php echo esc_attr( $tdd_pb_options['bar_background_color'] ); ?>" ></td>
-		</tr>
-
-		<tr valign="top">
-			<td>
-			<input type="submit" name="save" value="Save Options" class="button-primary" />
-			<input type="submit" name="reset" value="Reset" class="button-secondary" />
-			
-	</table>
-
+	
+	<form action="options.php" method="post">
+	<?php settings_fields( 'tdd_pb_options' ); ?>
+	<?php do_settings_sections(  __FILE__ ); ?>
+	<input name="Submit" type="submit" value="Save Changes" class="button-primary" />
+	</form>
 </div>
 <?php
+}
+
+//Register settings
+function tdd_pb_admin_init() {
+	register_setting( 'tdd_pb_options', 'tdd_pb_options', 'tdd_pb_options_validate' );
+	
+	//register Scripts and Styles section & controls
+	add_settings_section( 'tdd_pb_sas', 'Scripts and Styles', 'tdd_pb_admin_sasheader', __FILE__ );
+	add_settings_field( 'animate', 'Animate Bars', 'tdd_pb_admin_form_animate', __FILE__ , 'tdd_pb_sas' );
+	add_settings_field( 'default_css', 'Use Default CSS', 'tdd_pb_admin_form_default_css', __FILE__, 'tdd_pb_sas');
+
+	//register Percent section & controls
+	add_settings_section( 'tdd_pb_percent', 'Percentage Displays', 'tdd_pb_admin_percentheader', __FILE__ );
+	add_settings_field( 'display_percentage', 'Display Percent Complete', 'tdd_pb_admin_form_perecent_display', __FILE__, 'tdd_pb_percent' );
+	add_settings_field( 'percentage_color', 'Color of Percentage Text', 'tdd_pb_admin_form_percentage_color', __FILE__, 'tdd_pb_percent' );
+	add_settings_field( 'bar_background_color', 'Color of Bar Background', 'tdd_pb_admin_form_bar_background_color', __FILE__, 'tdd_pb_percent' );
+
+}
+add_action( 'admin_init', 'tdd_pb_admin_init' );
+
+//Scripts & Styles section header
+function tdd_pb_admin_sasheader(){
+	echo "<p>The following two boxes allow you to stop including the animation javascript and the default CSS on each page load. It's highly suggested that you don't turn off the Default CSS option unless you have a replacement in mind. The Animate Bars option can be turned off freely if you'd prefer the bars didn't have that cool animation (or you want to save HTTP requests).</p>";
+}
+
+//Animate Checkbox
+function tdd_pb_admin_form_animate(){
+	$options = get_option('tdd_pb_options');
+	$checked = ($options['animate']) ? ' checked="checked" ' : '';
+	echo "<input name='tdd_pb_options[animate]' id='animate' type='checkbox' ". $checked ."> <br />
+			<small>This script depends on jQuery, so it will ensure that is loaded as well</small>";
+}
+
+//Default CSS
+function tdd_pb_admin_form_default_css(){
+	$options = get_option('tdd_pb_options');
+	$checked = ($options['default_css']) ? ' checked="checked" ' : '';
+	echo "<input name='tdd_pb_options[default_css]' id='default_css' type='checkbox' ".$checked.">";
+}
+
+
+//Percentage displays section header
+function tdd_pb_admin_percentheader(){
+echo "<p>By default, the percentage progress is displayed in the bar. This allows you to optionally turn that off and/or set the color of the text</p>";
+}
+
+
+//Percent Display
+function tdd_pb_admin_form_perecent_display(){
+	$options = get_option('tdd_pb_options');
+	$checked = ($options['display_percentage']) ? ' checked="checked" ' : '';
+	echo "<input name='tdd_pb_options[display_percentage]' id='display_percentage' type='checkbox' ". $checked .">";
+}
+
+//percentage_color
+function tdd_pb_admin_form_percentage_color(){
+	$options = get_option('tdd_pb_options');
+	echo "#<input name='tdd_pb_options[percentage_color]' id='percentage_color' type='text' value='{$options['percentage_color']}' maxlength='6' size='6' />";
+}
+
+function tdd_pb_admin_form_bar_background_color(){
+	$options = get_option('tdd_pb_options');
+	echo "#<input name='tdd_pb_options[bar_background_color]' id='bar_backround_color' type='text' value='{$options['bar_background_color']}' maxlength='6' size='6' />";
+}
+
+//validate
+function tdd_pb_options_validate( $input ){
+	
+		//whitelist checkboxes (add them back in, even if false)
+		$input['display_percentage'] =  ( isset( $input['display_percentage'] ) ) ? $input['display_percentage'] : false;
+		$input['animate'] =  ( isset( $input['animate'] ) ) ? $input['animate'] : false;
+		$input['default_css'] =  ( isset( $input['default_css'] ) ) ? $input['default_css'] : false;
+	
+	return $input;
 }

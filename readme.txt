@@ -4,7 +4,7 @@ Donate link: http://websitesthatdontsuck.com/contact
 Tags: progress, shortcode
 Requires at least: 3.2.1
 Tested up to: 3.2.1
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 
 A progress bar plugin solution.
 
@@ -41,6 +41,10 @@ Note that "id" and "ids" are interchangeable
 
 == Changelog ==
 
+= 1.2 =
+* Settings page actually works now
+* Settings page now references __FILE__ instead of some arbitrary tag.
+
 = 1.1 =
 * Left some debugging code for the advanced debug bar in the script. Have to remove it to make this thing work.
 
@@ -48,6 +52,9 @@ Note that "id" and "ids" are interchangeable
 The first version
 
 == Upgrade Notice ==
+
+= 1.2 =
+* If you'd like the settings page to work, upgrade.
 
 = 1.1 =
 * Blocking bugfix. Plugin won't work unless you upgrade
