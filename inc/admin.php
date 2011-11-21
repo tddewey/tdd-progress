@@ -3,16 +3,14 @@
 * Setup custom meta boxes for the tdd_bp custom post type page
 */
 function tdd_pb_metabox_create() {
-	add_meta_box( 'tdd_pb_meta', 'Progress Bar Options', 'tdd_pb_metabox_display', 'tdd_pb' );
+	add_meta_box( 'tdd_pb_meta', __( 'Progress Bar Options' ), 'tdd_pb_metabox_display', 'tdd_pb' );
 }
 add_action( 'add_meta_boxes', 'tdd_pb_metabox_create' );
 
-function tdd_pb_metabox_display($post) {
 /*
-		bar specific options:
-			- color/graphic
-			- percentage (or API call)
+* Post type meta box display
 */
+function tdd_pb_metabox_display($post) {
 	$tdd_pb_color = get_post_meta( $post->ID, '_tdd_pb_color', true );
 	$tdd_pb_percentage = get_post_meta( $post->ID, '_tdd_pb_percentage', true );
 
@@ -22,16 +20,16 @@ function tdd_pb_metabox_display($post) {
 		<tr valign="top">
 			<th scope="row"><label for="td_pb_color">Bar Color</label></th>
 			<td><select name="tdd_pb_color">
-				<option value="strawberry" <?php selected( $tdd_pb_color, 'strawberry' ); ?>>Strawberry</option>
-				<option value="fuchsia" <?php selected( $tdd_pb_color, 'fuchsia' ); ?>>Fuchsia</option>
-				<option value="purple" <?php selected( $tdd_pb_color, 'purple' ); ?>>Purple</option>
-				<option value="blue" <?php selected( $tdd_pb_color, 'blue' ); ?>>Blue</option>
-				<option value="lightblue" <?php selected( $tdd_pb_color, 'lightblue' ); ?>>Light Blue</option>
-				<option value="teal" <?php selected( $tdd_pb_color, 'teal' ); ?>>Teal</option>
-				<option value="green" <?php selected( $tdd_pb_color, 'green' ); ?>>Green</option>
-				<option value="yellow" <?php selected( $tdd_pb_color, 'yellow' ); ?>>Yellow</option>
-				<option value="orange" <?php selected( $tdd_pb_color, 'orange' ); ?>>Orange</option>
-				<option value="red" <?php selected( $tdd_pb_color, 'red' ); ?>>Red</option>
+				<option value="strawberry" <?php selected( $tdd_pb_color, 'strawberry' ); ?>><?php _e( 'Strawberry', 'tdd_pb' ); ?></option>
+				<option value="fuchsia" <?php selected( $tdd_pb_color, 'fuchsia' ); ?>><?php _e( 'Fuchsia', 'tdd_pb' ); ?></option>
+				<option value="purple" <?php selected( $tdd_pb_color, 'purple' ); ?>><?php _e( 'Purple', 'tdd_pb' ); ?></option>
+				<option value="blue" <?php selected( $tdd_pb_color, 'blue' ); ?>><?php _e( 'Blue', 'tdd_pb' ); ?></option>
+				<option value="lightblue" <?php selected( $tdd_pb_color, 'lightblue' ); ?>><?php _e( 'Light Blue', 'tdd_pb' ); ?></option>
+				<option value="teal" <?php selected( $tdd_pb_color, 'teal' ); ?>><?php _e( 'Teal', 'tdd_pb' ); ?></option>
+				<option value="green" <?php selected( $tdd_pb_color, 'green' ); ?>><?php _e( 'Green', 'tdd_pb' ); ?></option>
+				<option value="yellow" <?php selected( $tdd_pb_color, 'yellow' ); ?>><?php _e( 'Yellow', 'tdd_pb' ); ?></option>
+				<option value="orange" <?php selected( $tdd_pb_color, 'orange' ); ?>><?php _e( 'Orange', 'tdd_pb' ); ?></option>
+				<option value="red" <?php selected( $tdd_pb_color, 'red' ); ?>><?php _e( 'Red', 'tdd_pb' ); ?></option>
 				</select></td>
 		</tr>
 		<tr valign="top">
@@ -39,8 +37,8 @@ function tdd_pb_metabox_display($post) {
 			<td><input name="tdd_pb_percentage" type="text" maxlength="3" size="3" value="<?php echo esc_attr( $tdd_pb_percentage ); ?>">%</td>
 		</tr>
 	</table>
-
-	<p>Example shortcode: <code>[progress id=<?php the_ID(); ?>]</code> </p>
+	<?php $id = get_the_ID(); ?>
+	<p><?php _e( "Example shortcode: <code>[progress id={$id}]</code>", 'tdd_pb'); ?> </p>
 <?php
 }
 
@@ -68,7 +66,6 @@ function set_edit_tdd_pb_columns($columns) {
     unset($columns['date']);
     return array_merge($columns, 
               array('percentage' => 'Percentage',
-                    'color' => 'Color' ,
 					'shortcode' => 'Shortcode',
                     'date' => __('Date'),
                     ));
@@ -83,14 +80,11 @@ function tdd_pb_custom_columns( $column ){
 	global $post;
 	
 	switch ( $column ){
-		case 'color':
-			echo get_post_meta( $post->ID, '_tdd_pb_color', true );
-			break;
 		case 'percentage':
-			echo get_post_meta( $post->ID, '_tdd_pb_percentage', true ) . '% complete';
+			printf( __( '1%s % complete', 'tdd_pb'), get_post_meta( $post->ID, '_tdd_pb_percentage', true ) );
 			break;
 		case 'shortcode':
-			echo '<code>[progress id='. $post->ID .']';
+			echo '<code>[progress id='. $post->ID .']</code>';
 			break;
 	}
 }
@@ -106,12 +100,12 @@ $tdd_pb_options = get_option( 'tdd_pb_options');
 ?>
 <div class="wrap">
 	<?php screen_icon( 'plugins' ); ?>
-	<h2>TDD Progress Bars</h2>
+	<h2><?php _e( 'TDD Progress Bars', 'tdd_pb' ); ?></h2>
 	
 	<form action="options.php" method="post">
 	<?php settings_fields( 'tdd_pb_options' ); ?>
 	<?php do_settings_sections(  __FILE__ ); ?>
-	<input name="Submit" type="submit" value="Save Changes" class="button-primary" />
+	<input name="Submit" type="submit" value="<?php _e( 'Save Changes', 'tdd_pb' ); ?>" class="button-primary" />
 	</form>
 </div>
 <?php
@@ -122,30 +116,30 @@ function tdd_pb_admin_init() {
 	register_setting( 'tdd_pb_options', 'tdd_pb_options', 'tdd_pb_options_validate' );
 	
 	//register Scripts and Styles section & controls
-	add_settings_section( 'tdd_pb_sas', 'Scripts and Styles', 'tdd_pb_admin_sasheader', __FILE__ );
-	add_settings_field( 'animate', 'Animate Bars', 'tdd_pb_admin_form_animate', __FILE__ , 'tdd_pb_sas' );
-	add_settings_field( 'default_css', 'Use Default CSS', 'tdd_pb_admin_form_default_css', __FILE__, 'tdd_pb_sas');
+	add_settings_section( 'tdd_pb_sas', __( 'Scripts and Styles', 'tdd_pb' ), 'tdd_pb_admin_sasheader', __FILE__ );
+	add_settings_field( 'animate', __( 'Animate Bars', 'tdd_pb' ), 'tdd_pb_admin_form_animate', __FILE__ , 'tdd_pb_sas' );
+	add_settings_field( 'default_css', __( 'Use Default CSS', 'tdd_pb' ), 'tdd_pb_admin_form_default_css', __FILE__, 'tdd_pb_sas');
 
 	//register Percent section & controls
-	add_settings_section( 'tdd_pb_percent', 'Percentage Displays', 'tdd_pb_admin_percentheader', __FILE__ );
-	add_settings_field( 'display_percentage', 'Display Percent Complete', 'tdd_pb_admin_form_perecent_display', __FILE__, 'tdd_pb_percent' );
-	add_settings_field( 'percentage_color', 'Color of Percentage Text', 'tdd_pb_admin_form_percentage_color', __FILE__, 'tdd_pb_percent' );
-	add_settings_field( 'bar_background_color', 'Color of Bar Background', 'tdd_pb_admin_form_bar_background_color', __FILE__, 'tdd_pb_percent' );
+	add_settings_section( 'tdd_pb_percent', __( 'Percentage Displays', 'tdd_pb' ), 'tdd_pb_admin_percentheader', __FILE__ );
+	add_settings_field( 'display_percentage', __( 'Display Percent Complete', 'tdd_pb' ), 'tdd_pb_admin_form_perecent_display', __FILE__, 'tdd_pb_percent' );
+	add_settings_field( 'percentage_color', __( 'Color of Percentage Text', 'tdd_pb' ), 'tdd_pb_admin_form_percentage_color', __FILE__, 'tdd_pb_percent' );
+	add_settings_field( 'bar_background_color', __( 'Color of Bar Background', 'tdd_pb' ), 'tdd_pb_admin_form_bar_background_color', __FILE__, 'tdd_pb_percent' );
 
 }
 add_action( 'admin_init', 'tdd_pb_admin_init' );
 
 //Scripts & Styles section header
 function tdd_pb_admin_sasheader(){
-	echo "<p>The following two boxes allow you to stop including the animation javascript and the default CSS on each page load. It's highly suggested that you don't turn off the Default CSS option unless you have a replacement in mind. The Animate Bars option can be turned off freely if you'd prefer the bars didn't have that cool animation (or you want to save HTTP requests).</p>";
+	_e( "<p>The following two boxes allow you to stop including the animation javascript and the default CSS on each page load. It's highly suggested that you don't turn off the Default CSS option unless you have a replacement in mind. The Animate Bars option can be turned off freely if you'd prefer the bars didn't have that cool animation (or you want to save HTTP requests).</p>", 'tdd_pb' );
 }
 
 //Animate Checkbox
 function tdd_pb_admin_form_animate(){
 	$options = get_option('tdd_pb_options');
 	$checked = ($options['animate']) ? ' checked="checked" ' : '';
-	echo "<input name='tdd_pb_options[animate]' id='animate' type='checkbox' ". $checked ."> <br />
-			<small>This script depends on jQuery, so it will ensure that is loaded as well</small>";
+	echo "<input name='tdd_pb_options[animate]' id='animate' type='checkbox' ". $checked ."> <br /> ";
+	_e( "<small>This script depends on jQuery, so it will ensure that is loaded as well</small>", 'tdd_pb' );
 }
 
 //Default CSS
@@ -158,7 +152,7 @@ function tdd_pb_admin_form_default_css(){
 
 //Percentage displays section header
 function tdd_pb_admin_percentheader(){
-echo "<p>By default, the percentage progress is displayed in the bar. This allows you to optionally turn that off and/or set the color of the text</p>";
+	_e( "<p>By default, the percentage progress is displayed in the bar. This allows you to optionally turn that off and/or set the color of the text</p>", 'tdd_pb' );
 }
 
 
@@ -172,7 +166,7 @@ function tdd_pb_admin_form_perecent_display(){
 //percentage_color
 function tdd_pb_admin_form_percentage_color(){
 	$options = get_option('tdd_pb_options');
-	echo "#<input name='tdd_pb_options[percentage_color]' id='percentage_color' type='text' value='{$options['percentage_color']}' maxlength='6' size='6' />";
+	_e( "#<input name='tdd_pb_options[percentage_color]' id='percentage_color' type='text' value='{$options['percentage_color']}' maxlength='6' size='6' />", 'tdd_pb' );
 }
 
 function tdd_pb_admin_form_bar_background_color(){

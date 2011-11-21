@@ -1,0 +1,155 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TDD Progress Bars\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-11-21 06:55-0700\n"
+"PO-Revision-Date: 2011-11-21 06:56-0700\n"
+"Last-Translator: Taylor Dewey <td@tddewey.com>\n"
+"Language-Team: taylorde <td@tddewey.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;gettext;gettext_noop;_e;esc_attr__;esc_attr_e;esc_html__;esc_html_e;_x;_ex;esc_attr_x;esc_html_x;_n;_nx;_n_noop;_nx_noop\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: tdd-progress-bar.php:107
+msgid "Progress Bars"
+msgstr ""
+
+#: tdd-progress-bar.php:108
+msgid "Progress Bar"
+msgstr ""
+
+#: tdd-progress-bar.php:109
+#: tdd-progress-bar.php:110
+msgid "Add New Progress Bar"
+msgstr ""
+
+#: tdd-progress-bar.php:111
+msgid "Edit Progress Bar"
+msgstr ""
+
+#: tdd-progress-bar.php:112
+msgid "New Progress Bar"
+msgstr ""
+
+#: tdd-progress-bar.php:113
+msgid "View Progress Bar"
+msgstr ""
+
+#: tdd-progress-bar.php:114
+msgid "Search Progress Bars"
+msgstr ""
+
+#: tdd-progress-bar.php:115
+msgid "No Progress Bars Found"
+msgstr ""
+
+#: tdd-progress-bar.php:116
+msgid "No Progress Bars Found in the Trash"
+msgstr ""
+
+#: inc/admin.php:6
+msgid "Progress Bar Options"
+msgstr ""
+
+#: inc/admin.php:23
+msgid "Strawberry"
+msgstr ""
+
+#: inc/admin.php:24
+msgid "Fuchsia"
+msgstr ""
+
+#: inc/admin.php:25
+msgid "Purple"
+msgstr ""
+
+#: inc/admin.php:26
+msgid "Blue"
+msgstr ""
+
+#: inc/admin.php:27
+msgid "Light Blue"
+msgstr ""
+
+#: inc/admin.php:28
+msgid "Teal"
+msgstr ""
+
+#: inc/admin.php:29
+msgid "Green"
+msgstr ""
+
+#: inc/admin.php:30
+msgid "Yellow"
+msgstr ""
+
+#: inc/admin.php:31
+msgid "Orange"
+msgstr ""
+
+#: inc/admin.php:32
+msgid "Red"
+msgstr ""
+
+#: inc/admin.php:70
+msgid "Date"
+msgstr ""
+
+#: inc/admin.php:84
+#, php-format
+msgid "1%s % complete"
+msgstr ""
+
+#: inc/admin.php:103
+msgid "TDD Progress Bars"
+msgstr ""
+
+#: inc/admin.php:108
+msgid "Save Changes"
+msgstr ""
+
+#: inc/admin.php:119
+msgid "Scripts and Styles"
+msgstr ""
+
+#: inc/admin.php:120
+msgid "Animate Bars"
+msgstr ""
+
+#: inc/admin.php:121
+msgid "Use Default CSS"
+msgstr ""
+
+#: inc/admin.php:124
+msgid "Percentage Displays"
+msgstr ""
+
+#: inc/admin.php:125
+msgid "Display Percent Complete"
+msgstr ""
+
+#: inc/admin.php:126
+msgid "Color of Percentage Text"
+msgstr ""
+
+#: inc/admin.php:127
+msgid "Color of Bar Background"
+msgstr ""
+
+#: inc/admin.php:134
+msgid "<p>The following two boxes allow you to stop including the animation javascript and the default CSS on each page load. It's highly suggested that you don't turn off the Default CSS option unless you have a replacement in mind. The Animate Bars option can be turned off freely if you'd prefer the bars didn't have that cool animation (or you want to save HTTP requests).</p>"
+msgstr ""
+
+#: inc/admin.php:142
+msgid "<small>This script depends on jQuery, so it will ensure that is loaded as well</small>"
+msgstr ""
+
+#: inc/admin.php:155
+msgid "<p>By default, the percentage progress is displayed in the bar. This allows you to optionally turn that off and/or set the color of the text</p>"
+msgstr ""
+

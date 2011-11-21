@@ -3,7 +3,7 @@
 Plugin Name: TDD Progress Bars
 Plugin URI: http://github.com/tddewey/tdd-progress
 Description: Manage and display progress bars
-Version 0.1.2
+Version: 0.1.2
 Author: Taylor D. Dewey
 Author URI: http://websitesthatdontsuck.com
 Licence: GPLv3
@@ -37,7 +37,19 @@ Licence: GPLv3
 				- Perecentage / or API call.
 				
 */
+
+/*
+* set up text domain
+*/
+function tdd_pb_loadtextdomain(){
+	load_plugin_textdomain( 'tdd_pb', false, plugin_basename( __FILE__ ) . '/languages' );
+}
+add_action( 'init', 'tdd_pb_loadtextdomain' );
+
+
+//Allows us to filter loading of things based on options
 $tdd_pb_options = get_option( 'tdd_pb_options');
+
 
 /* load some default settings during plugin activation */
 register_activation_hook( __FILE__, 'tdd_pb_install' );
@@ -92,16 +104,16 @@ if ( $tdd_pb_options['animate'] ){
 */
 function tdd_pb_register_post_type(){
 	$labels = array(
-		'name' => 'Progress Bars',
-		'singular_name' => 'Progress Bar',
-		'add_new' => 'Add New Progress Bar',
-		'add_new_item' => 'Add New Progress Bar',
-		'edit_item' => 'Edit Progress Bar',
-		'new_item' => 'New Progress Bar',
-		'view_item' => 'View Progress Bar',
-		'search_items' => 'Search Progress Bars',
-		'not_found' => 'No Progress Bars Found',
-		'not_found_in_trash' => 'No Progress Bars Found in the Trash',
+		'name' => __( 'Progress Bars', 'tdd_pb' ),
+		'singular_name' => __( 'Progress Bar', 'tdd_pb' ),
+		'add_new' => __( 'Add New Progress Bar', 'tdd_pb' ),
+		'add_new_item' => __('Add New Progress Bar', 'tdd_pb' ),
+		'edit_item' => __( 'Edit Progress Bar', 'tdd_pb' ),
+		'new_item' => __( 'New Progress Bar', 'tdd_pb' ),
+		'view_item' => __( 'View Progress Bar', 'tdd_pb' ),
+		'search_items' => __( 'Search Progress Bars', 'tdd_pb' ),
+		'not_found' => __( 'No Progress Bars Found', 'tdd_pb' ),
+		'not_found_in_trash' => __( 'No Progress Bars Found in the Trash', 'tdd_pb' ),
 	);
 	
 	$args = array(
