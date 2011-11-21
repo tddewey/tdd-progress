@@ -72,10 +72,12 @@ function tdd_pb_install() {
 */
 function tdd_pb_load_styles() {
 	wp_enqueue_style( 'tdd_pb_style', plugins_url( 'css/default.css', __FILE__ ), '', '.1' );
+	
 }
 
 if ( $tdd_pb_options['default_css'] ){
 	add_action( 'init', 'tdd_pb_load_styles', 99 );
+	add_action( 'admin_print_styles-'.__FILE__, 'tdd_pb_load_styles' );
 }
 
 
@@ -94,6 +96,7 @@ function tdd_pb_load_js(){
 
 if ( $tdd_pb_options['animate'] ){
 	add_action( 'init', 'tdd_pb_load_js', 99 );
+	add_action( 'admin_print_scripts-'.__FILE__, 'tdd_pb_load_js' );
 }
 
 /*
@@ -151,10 +154,12 @@ include plugin_dir_path( __FILE__ ). 'inc/admin.php';
 * [progress ids=3,2,4]
 * [progress ids=1]
 * [progress ids=3,4 width='50px']
+
+* Also any of the above formats using shortcode [tdd_pb]
 */
 
-function tdd_pb_shortcode($args){
-	$tdd_pb_options = get_option( 'tdd_pb_options');
+
+function tdd_pb_shortcode( $args ){
 
 	$args = shortcode_atts( array(
 		'id' => '',
@@ -169,13 +174,58 @@ function tdd_pb_shortcode($args){
 	$idsarr = explode( ',', $args['ids'] );
 	$idsarr = array_merge($idarr, $idsarr);
 	
-	//Filter the array to ensure we're getting things that look like integers.
-	$idsarr = array_filter( $idsarr, 'is_numeric' );
+	//Request some bars
+	$return = tdd_pb_get_bars(array(
+		'ids' => $idsarr,
+		'width' => $args['width'],
+		'class' => $args['class'],
+	));
 	
-	//count if this is a race (more than one progress bar being displayed)
+	//Return them bars
+	return $return;
+}
+
+add_shortcode('progress', 'tdd_pb_shortcode' );
+add_shortcode('tdd_pb', 'tdd_pb_shortcode' );
+
+
+/*
+* Returns a progress bar container with 1 or more progress bars
+*
+* @param	array	$ids			An array of the ids of progress bars to fetch.
+* @param	str		$width			Width, specified in pixels, percents, em, whatever of the container
+* @param	str		$class			Any additional CSS classes to add to the global container (can force a race this way)
+* @param	str		$default_color	If the color of a bar isn't specified, this is the fallback.
+*/
+function tdd_pb_get_bars( $args ){
+	$defaults = array(
+		'ids' => array(),
+		'width' => 'auto',
+		'class' => '',
+		'default_color' => 'red',
+		);
+
+	$tdd_pb_options = get_option( 'tdd_pb_options');
+
+	
+	//parse incoming arguments against default.
+	$args = wp_parse_args( $args, $defaults );
+
+
+	//Filter the array to ensure we're getting things that look like integers. Will also filter out blank array items (i.e. '' )
+	$idsarr = array_filter( $args['ids'], 'is_numeric' );
+
+	//count if this is a race (more than one progress bar being displayed. The race format can also be forced by passing "race" in the $class argument)
 	$race = ( count( $idsarr ) > 1 ) ? 'race' : '';
-	//Load up the $return var with our progress bar container
-	$return = '<div class="tdd_pb_global_container '. $race .' '.$args["class"].'" style="width:'.strip_tags($args["width"]).'">';
+
+	//Set up our global container
+	$return = '<div class="tdd_pb_global_container '.$race.' '.$args['class'].'" style="width:'.strip_tags( $args['width'] ).'">';
+	
+	//If there are no ids to display, this is kind of a moot proccess - so let's say so:
+	if ( count( $idsarr ) <= 0 ){
+		$return .= '<p>' . __( 'No progress bars were set, so there is nothing to display', 'tdd_pb' ). '</p></div>';
+		return $return;
+	}
 	
 	//Setup a new WP_Query for our progress bars.
 	$tdd_pb_query = new WP_Query();
@@ -185,12 +235,18 @@ function tdd_pb_shortcode($args){
 		'post__in' => $idsarr,
 		'meta_key' => '_tdd_pb_percentage'
 	));
+
+	//If there were no posts to display, again, this is moot, so let's say so:
+	if ( !$tdd_pb_query->have_posts() ) {
+		$return .= '<p>'. __( 'No progress bars found', 'tdd_pb' ) . '</p></div>';
+		return $return;
+		}
 	
 	while ( $tdd_pb_query->have_posts() ): $tdd_pb_query->the_post();
 		$percentage = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_percentage', true ) );
 		$color = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_color', true ) );
 		//if no color, define a default
-		$color = (!$color) ? 'red' : $color;
+		$color = (!$color) ? $args['default_color'] : $color;
 		$return .= '<div title="'.get_the_title() .'" class="tdd_pb_bar_container" style="background-color: #'. $tdd_pb_options["bar_background_color"] .'">';
 		if ($tdd_pb_options['display_percentage']){
 			$return .= '<div class="numbers" style="color: #'.$tdd_pb_options["percentage_color"].'">'. $percentage .'%</div>';
@@ -198,9 +254,8 @@ function tdd_pb_shortcode($args){
 		$return .= '<div class="tdd_pb_bar '. $color .'" style="width:'. $percentage .'%"></div></div>';
 	
 	endwhile;
-	
+
 	//Close the progress bar container, and return everything to screen.
 	$return .= '</div>';
 	return $return;
 }
-add_shortcode('progress', 'tdd_pb_shortcode' );

@@ -39,6 +39,13 @@ function tdd_pb_metabox_display($post) {
 	</table>
 	<?php $id = get_the_ID(); ?>
 	<p><?php _e( "Example shortcode: <code>[progress id={$id}]</code>", 'tdd_pb'); ?> </p>
+	
+	<?php echo tdd_pb_get_bars( array(
+		'ids' => array( get_the_ID() ),
+		'class' => 'race',
+	) );
+	?>
+	
 <?php
 }
 
@@ -65,7 +72,7 @@ add_action( 'save_post', 'tdd_pb_metabox_save' );
 function set_edit_tdd_pb_columns($columns) {
     unset($columns['date']);
     return array_merge($columns, 
-              array('percentage' => 'Percentage',
+              array('progress_bar' => 'Progress Bar',
 					'shortcode' => 'Shortcode',
                     'date' => __('Date'),
                     ));
@@ -80,8 +87,12 @@ function tdd_pb_custom_columns( $column ){
 	global $post;
 	
 	switch ( $column ){
-		case 'percentage':
-			printf( __( '%1$s%% complete', 'tdd_pb'), get_post_meta( $post->ID, '_tdd_pb_percentage', true ) );
+		case 'progress_bar':
+			echo tdd_pb_get_bars( array( 
+				'ids' => array( $post->ID ),
+				'class' => 'race',
+			) );
+
 			break;
 		case 'shortcode':
 			echo '<code>[progress id='. $post->ID .']</code>';
@@ -89,6 +100,16 @@ function tdd_pb_custom_columns( $column ){
 	}
 }
 add_action( 'manage_posts_custom_column' , 'tdd_pb_custom_columns' );
+
+/*
+* @todo
+* Filter the "Quick Edit" Screen, to add percentage and color
+*/
+function tdd_pb_quick_edit( $column_name, $post_type ){
+	
+}
+//add_action( 'quick_edit_custom_box', 'tdd_pb_quick_edit', 20, 2 );
+
 
 
 /*
