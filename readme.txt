@@ -41,11 +41,17 @@ Note that "id" and "ids" are interchangeable
 
 == Changelog ==
 
-= 1.2 =
+= 0.1.3=
+* Added the function tdd_pb_get_bars() function, which could be used in templates, but I'm going to leave undocumented for the moment so If it needs to change, it can. It's mostly designed for internal use.
+* Added [tdd_pb] as a shortcode alias for [progress]. I think most people will use [progress], but I wanted to use [tdd_pb] since it's all over the code
+* The Default CSS and Javascript are now added to the progress bar pages in wp-admin.
+* Progress bars are now displayed in wp-admin on the "Manage Progress Bars" and the "Edit Progress Bar" screens
+
+= 0.1.2 =
 * Settings page actually works now
 * Settings page now references __FILE__ instead of some arbitrary tag.
 
-= 1.1 =
+= 0.1.1 =
 * Left some debugging code for the advanced debug bar in the script. Have to remove it to make this thing work.
 
 = .1 =
@@ -53,10 +59,14 @@ The first version
 
 == Upgrade Notice ==
 
-= 1.2 =
+= 0.1.3 =
+* Non critical, adds a few features. Some stuff to make managing things easier.
+* If you use custom CSS (or javascript for that matter), you will need to also include it for use in wp-admin. See admin_enqueue_scripts for examples of how to do this. This is to enable the proper display of progress bars in wp-admin. Alternatively, you could leave the default styles checkbox on (which will enable them for the admin side as well), and remove the action that adds the styles to the public side.
+
+= 0.1.2 =
 * If you'd like the settings page to work, upgrade.
 
-= 1.1 =
+= 0.1.1 =
 * Blocking bugfix. Plugin won't work unless you upgrade
 
 = .1 =
