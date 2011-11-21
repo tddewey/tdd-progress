@@ -81,7 +81,7 @@ function tdd_pb_custom_columns( $column ){
 	
 	switch ( $column ){
 		case 'percentage':
-			printf( __( '1%s % complete', 'tdd_pb'), get_post_meta( $post->ID, '_tdd_pb_percentage', true ) );
+			printf( __( '%1$s%% complete', 'tdd_pb'), get_post_meta( $post->ID, '_tdd_pb_percentage', true ) );
 			break;
 		case 'shortcode':
 			echo '<code>[progress id='. $post->ID .']</code>';
