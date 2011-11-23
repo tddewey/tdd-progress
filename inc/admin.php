@@ -1,4 +1,21 @@
 <?php
+
+/*
+* Array of color options
+*/
+$colors = array ( 
+	'strawberry' => __ ( 'Strawberry', 'tdd_pb' ),
+	'fuchsia' => __( 'Fuchsia', 'tdd_pb' ),
+	'purple' => __( 'Purple', 'tdd_pb' ),
+	'blue' => __( 'Blue', 'tdd_pb' ),
+	'lightblue' => __( 'Light Blue', 'tdd_pb' ),
+	'teal' => __( 'Teal', 'tdd_pb' ),
+	'green' => __( 'Green', 'tdd_pb' ),
+	'yellow' => __( 'Yellow', 'tdd_pb' ),
+	'orange' => __( 'Orange', 'tdd_pb' ),
+	'red'	=> __( 'Red', 'tdd_pb' )
+	);
+
 /*
 * Setup custom meta boxes for the tdd_bp custom post type page
 */
@@ -13,23 +30,16 @@ add_action( 'add_meta_boxes', 'tdd_pb_metabox_create' );
 function tdd_pb_metabox_display($post) {
 	$tdd_pb_color = get_post_meta( $post->ID, '_tdd_pb_color', true );
 	$tdd_pb_percentage = get_post_meta( $post->ID, '_tdd_pb_percentage', true );
-
 ?>
 
 	<table class="form-table">
 		<tr valign="top">
 			<th scope="row"><label for="td_pb_color">Bar Color</label></th>
 			<td><select name="tdd_pb_color">
-				<option value="strawberry" <?php selected( $tdd_pb_color, 'strawberry' ); ?>><?php _e( 'Strawberry', 'tdd_pb' ); ?></option>
-				<option value="fuchsia" <?php selected( $tdd_pb_color, 'fuchsia' ); ?>><?php _e( 'Fuchsia', 'tdd_pb' ); ?></option>
-				<option value="purple" <?php selected( $tdd_pb_color, 'purple' ); ?>><?php _e( 'Purple', 'tdd_pb' ); ?></option>
-				<option value="blue" <?php selected( $tdd_pb_color, 'blue' ); ?>><?php _e( 'Blue', 'tdd_pb' ); ?></option>
-				<option value="lightblue" <?php selected( $tdd_pb_color, 'lightblue' ); ?>><?php _e( 'Light Blue', 'tdd_pb' ); ?></option>
-				<option value="teal" <?php selected( $tdd_pb_color, 'teal' ); ?>><?php _e( 'Teal', 'tdd_pb' ); ?></option>
-				<option value="green" <?php selected( $tdd_pb_color, 'green' ); ?>><?php _e( 'Green', 'tdd_pb' ); ?></option>
-				<option value="yellow" <?php selected( $tdd_pb_color, 'yellow' ); ?>><?php _e( 'Yellow', 'tdd_pb' ); ?></option>
-				<option value="orange" <?php selected( $tdd_pb_color, 'orange' ); ?>><?php _e( 'Orange', 'tdd_pb' ); ?></option>
-				<option value="red" <?php selected( $tdd_pb_color, 'red' ); ?>><?php _e( 'Red', 'tdd_pb' ); ?></option>
+				<?php global $colors; ?>
+				<?php foreach ($colors as $color=>$label ): ?>
+					<option value="<?php echo $color; ?>" <?php selected( $tdd_pb_color, $color ); ?>"><?php echo $label; ?></option>
+				<?php endforeach; ?>
 				</select></td>
 		</tr>
 		<tr valign="top">
@@ -102,14 +112,116 @@ function tdd_pb_custom_columns( $column ){
 add_action( 'manage_posts_custom_column' , 'tdd_pb_custom_columns' );
 
 /*
-* @todo
-* Filter the "Quick Edit" Screen, to add percentage and color
+* Add some custom inputs to the Quick Edit Menu
+* Normally this would require a hook into save_posts (because it doesn't do it automatically), but we've already done that for the custom meta box info.
 */
-function tdd_pb_quick_edit( $column_name, $post_type ){
+function tdd_pb_add_quick_edit( $column_name, $post_type ){
+	if ( $column_name != 'progress_bar' || $post_type != 'tdd_pb' ) return;
+	?>
 	
-}
-//add_action( 'quick_edit_custom_box', 'tdd_pb_quick_edit', 20, 2 );
+	<fieldset class="inline-edit-col-right">
+		<div class="inline-edit-col">
+			<label class="alignleft"><span class="title"><?php _e( 'Complete', 'tdd_pb' ); ?></span>
+			<input name="tdd_pb_percentage" id="tdd_pb_percentage" type="text" value="" size="4" maxlength="3" />%
+			</label>
+		</div>
+		<div class="inline-edit-col">
+			<label class="alignright"><span class="title"><?php _e( 'Bar Color', 'tdd_pb' ); ?></span>
+				<select name="tdd_pb_color" id="tdd_pb_color">
+				<?php global $colors; ?>
+				<?php foreach ($colors as $color=>$label ): ?>
+					<option value="<?php echo $color; ?>"><?php echo $label; ?></option>
+				<?php endforeach; ?>
+				</select>
+			</label>
+	</fieldset>
+	<?php
+	}
+add_action( 'quick_edit_custom_box', 'tdd_pb_add_quick_edit', 20, 2 );
 
+/*
+* Add the AJAX Handler for the Quick Edit screen values
+*/
+function tdd_pb_ajax_qe_handler() {
+	global $wpdb;
+
+	//If the incoming post id isn't numeric -- or isn't set, return an error.	
+	if ( !is_numeric($_GET['post_id']) || !isset($_GET['post_id']) ){
+		$json = array ( 'error' => 'Post ID not set' );
+		echo json_encode($json);
+		die();
+	}
+
+	//Check for correct permissions, and verify nonce
+	if ( !current_user_can( 'edit_posts' ) || !check_ajax_referer( "tdd_pb_get_{$_GET['post_id']}", 'nonce', false) ) {
+		$json = array ( 'error' => 'Permission Denied', 'GET' => $_GET );
+		echo json_encode($json);
+		die();
+	}	
+
+	$tdd_pb_percentage = get_post_meta( $_GET['post_id'], '_tdd_pb_percentage', true );	
+	$tdd_pb_color = get_post_meta( $_GET['post_id'], '_tdd_pb_color', true );
+
+	$json = array(
+		'percentage' => $tdd_pb_percentage,
+		'color' => $tdd_pb_color
+		);
+
+	echo json_encode($json);
+	die();
+}
+add_action( 'wp_ajax_tdd_pb_get_custom_values', 'tdd_pb_ajax_qe_handler' );
+/*
+* Add some javascript to feed the correct values to the quick edit screen
+*/
+function tdd_pb_quick_edit_js(){
+	global $current_screen;
+	if ( ($current_screen->id != 'edit-tdd_pb') || ($current_screen->post_type != 'tdd_pb') ) return;
+	?>
+	<script type="text/javascript">
+		function set_inline_tdd_pb( post_id, nonce ){
+			inlineEditPost.revert(); //Calls an internal handler to make all the regular values fix themselves appropriately.
+			
+			var ajaxdata = {
+				action: 'tdd_pb_get_custom_values',
+				nonce: nonce,
+				post_id: post_id
+				}
+				
+			jQuery.getJSON(ajaxurl, ajaxdata, function(response){
+				
+				//Set the percentage to be correct
+				var tdd_pb_percentage = document.getElementById('tdd_pb_percentage');
+				tdd_pb_percentage.value = response.percentage;
+
+				//Set "selected" for the right option in the color select list				
+				var tdd_pb_color = document.getElementById('tdd_pb_color');
+				jQuery('#tdd_pb_color').val(response.color).attr('selected', true);
+			});
+			
+		} //end set_inline_tdd_pb
+	</script>
+	<?php
+}
+add_action( 'admin_footer', 'tdd_pb_quick_edit_js' );
+
+/*
+* Binds the tdd_pb_quick_edit_js to the quick edit button
+*/
+function tdd_pb_quick_edit_button( $actions, $post ){
+	global $current_screen;
+	if ( ($current_screen->id != 'edit-tdd_pb') || ($current_screen->post_type != 'tdd_pb') ) return;
+	
+	$nonce = wp_create_nonce( "tdd_pb_get_{$post->ID}" );
+		
+	$actions['inline hide-if-no-js'] = '<a href="#" class="editinline" title="';
+	$actions['inline hide-if-no-js'] .= esc_attr( __('Edit this item inline') ). '" ';
+	$actions['inline hide-if-no-js'] .= ' onclick="set_inline_tdd_pb('.$post->ID.', \''.$nonce.'\');">';
+	$actions['inline hide-if-no-js'] .= __('Quick&nbsp;Edit');
+	$actions['inline hide-if-no-js'] .= '</a>';
+	return $actions;
+}
+add_filter( 'post_row_actions', 'tdd_pb_quick_edit_button', 10, 2 );
 
 
 /*

@@ -17,83 +17,83 @@
 }
 
 .red {
-	background-position-y:0;
+	background-position: 0px 0;
 	}
 
 .race .red {
-	background-position-y:-12px;
+	background-position: 0px -12px;
 	}
 
 .orange {
-	background-position-y:-50px;
+	background-position: 0px -50px;
 	}
 
 .race .orange {
-	background-position-y:-62px;
+	background-position: 0px -62px;
 	}
 
 .yellow {
-	background-position-y:-100px;
+	background-position: 0px -100px;
 	}
 
 .race .yellow {
-	background-position-y:-112px;
+	background-position: 0px -112px;
 	}
 
 .green {
-	background-position-y:-150px;
+	background-position: 0px -150px;
 	}
 
 .race .green {
-	background-position-y:-162px;
+	background-position: 0px -162px;
 	}
 
 .teal {
-	background-position-y:-200px;
+	background-position: 0px -200px;
 	}
 
 .race .teal {
-	background-position-y:-212px;
+	background-position: 0px -212px;
 	}
 
 .lightblue {
-	background-position-y:-250px;
+	background-position: 0px -250px;
 	}
 
 .race .lightblue {
-	background-position-y:-262px;
+	background-position: 0px -262px;
 	}
 
 .blue {
-	background-position-y:-300px;
+	background-position: 0px -300px;
 	}
 
 .race .blue {
-	background-position-y:-312px;
+	background-position: 0px -312px;
 	}
 
 .purple {
-	background-position-y:-350px;
+	background-position: 0px -350px;
 	}
 
 .race .purple {
-	background-position-y:-362px;
+	background-position: 0px -362px;
 	}
 
 .fuchsia {
-	background-position-y:-400px;
+	background-position: 0px -400px;
 	}
 	
 .race .fuchsia {
-	background-position-y:-415px;
+	background-position: 0px -415px;
 	}
 
 .strawberry {
-	background-position-y:-450px;
+	background-position: 0px -450px;
 	}
 	
 .race .strawberry {
-	background-position-y:-415px;
+	background-position: 0px -465px;
 	}
 
 .tdd_pb_bar {
