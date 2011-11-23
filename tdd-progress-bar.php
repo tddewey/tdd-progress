@@ -3,7 +3,7 @@
 Plugin Name: TDD Progress Bars
 Plugin URI: http://github.com/tddewey/tdd-progress
 Description: Manage and display progress bars
-Version: 0.1.2
+Version: 0.1.3
 Author: Taylor D. Dewey
 Author URI: http://websitesthatdontsuck.com
 Licence: GPLv3
