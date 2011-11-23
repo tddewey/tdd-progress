@@ -210,7 +210,7 @@ add_action( 'admin_footer', 'tdd_pb_quick_edit_js' );
 */
 function tdd_pb_quick_edit_button( $actions, $post ){
 	global $current_screen;
-	if ( ($current_screen->id != 'edit-tdd_pb') || ($current_screen->post_type != 'tdd_pb') ) return;
+	if ( ($current_screen->id != 'edit-tdd_pb') || ($current_screen->post_type != 'tdd_pb') ) return $actions;
 	
 	$nonce = wp_create_nonce( "tdd_pb_get_{$post->ID}" );
 		

@@ -4,7 +4,7 @@ Donate link: http://websitesthatdontsuck.com/contact
 Tags: progress, shortcode
 Requires at least: 3.2.1
 Tested up to: 3.2.1
-Stable tag: 0.1.3
+Stable tag: 0.2
 
 A progress bar plugin solution.
 
@@ -41,7 +41,11 @@ Note that "id" and "ids" are interchangeable
 
 == Changelog ==
 
-= 0.1.3=
+= 0.2 =
+* Fixes an issue where the "quick edit" link (and others) would not show up on the Manage Posts screen.
+* Also a version bump to 0.2 (which should have happened instead of 0.1.3)
+
+= 0.1.3 =
 * Given the major change to the CSS, the javascript to make things animate also had to change pretty extensively. One side effect is that the animations on a page will eventually slow to a standstill at the rate of about 1-2 pixels every 15 seconds or so. The animation is still a work in progress...
 * Major bug fixes for the CSS to show up in, well, pretty much everything but Chrome. Didn't realize I was using an unsupported style.
 * Small CSS fix for the "Strawberry" color - now shows up correctly
@@ -62,6 +66,9 @@ Note that "id" and "ids" are interchangeable
 The first version
 
 == Upgrade Notice ==
+
+= 0.2 =
+* Fixes an issue where the "quick edit" link (and others) would not show up on the Manage Posts screen.
 
 = 0.1.3 =
 * Major fix for CSS and Javascript. Now works in Firefox (and likely other browsers, but still testing).
