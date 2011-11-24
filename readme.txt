@@ -1,12 +1,12 @@
 === TDD Progress Bar ===
 Contributors: taylorde
-Donate link: http://websitesthatdontsuck.com/contact
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FEQG5KTTPRRXS
 Tags: progress, shortcode
 Requires at least: 3.2.1
-Tested up to: 3.2.1
+Tested up to: 3.3
 Stable tag: 0.2
 
-A progress bar plugin solution.
+Configure and display any number of percent-complete progress bars.
 
 == Description ==
 
@@ -14,7 +14,7 @@ TDD Progress Bar allows you to track the progress of multiple projects. Actually
 
 == Screenshots ==
 1. A Progress Bar "race"
-2. Progress Bar entry screen
+2. Progress Bar management page showing all the colors available
 3. A solo Progress Bar
 
 Unfortunately screenshots don't really capture how cool these look while animating...
