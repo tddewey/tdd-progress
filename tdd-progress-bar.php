@@ -42,7 +42,7 @@ Licence: GPLv3
 * set up text domain
 */
 function tdd_pb_loadtextdomain(){
-	load_plugin_textdomain( 'tdd_pb', false, plugin_basename( __FILE__ ) . '/languages' );
+	load_plugin_textdomain( 'tdd_pb', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 add_action( 'init', 'tdd_pb_loadtextdomain' );
 
