@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: progress, shortcode
 Requires at least: 3.2.1
 Tested up to: 3.3
-Stable tag: 0.2
+Stable tag: 0.2.1
 
 Configure and display any number of percent-complete progress bars.
 
@@ -20,6 +20,12 @@ TDD Progress Bar allows you to track the progress of multiple projects. Actually
 Unfortunately screenshots don't really capture how cool these look while animating...
 
 == Frequently Asked Questions ==
+
+= Only text is displayed in my sidebar =
+Unfortunately shortcode is not interpreted in the sidebar. For now you can add this to functions.php `add_filter('widget_text', 'do_shortcode');`
+
+The plan is to release a dedicated sidebar widget soon.
+
 = It doesn't look right.. =
 This project uses some cutting-edge CSS3 to make things look cooler like drop shadow, inner-shadow, border-radius, etc. If it doesn't look right in your browser first, consider upgrading, second: let me know what browser you're using to see if I want to consider support. Things should degrade gracefully for non-cutting edge browsers (although IE6 is still going to look like crap no matter what you do). You're welcome to write your own CSS to override what I've already written (or un-check "Default Styles" on the settings page and roll-yer-own).
 
@@ -40,6 +46,9 @@ After configuring a progress bar, insert it anywhere you'd like with shortcode.
 Note that "id" and "ids" are interchangeable
 
 == Changelog ==
+
+= 0.2.1 =
+* fixes an issue where the get_text_domain() function was referencing a non-existant directory and throwing an error
 
 = 0.2 =
 * Fixes an issue where the "quick edit" link (and others) would not show up on the Manage Posts screen.
@@ -64,22 +73,3 @@ Note that "id" and "ids" are interchangeable
 
 = .1 =
 The first version
-
-== Upgrade Notice ==
-
-= 0.2 =
-* Fixes an issue where the "quick edit" link (and others) would not show up on the Manage Posts screen.
-
-= 0.1.3 =
-* Major fix for CSS and Javascript. Now works in Firefox (and likely other browsers, but still testing).
-* Added some features to the "Manage Progress Bars" page
-* If you use custom CSS (or javascript for that matter), you will need to also include it for use in wp-admin. See admin_enqueue_scripts for examples of how to do this. This is to enable the proper display of progress bars in wp-admin. Alternatively, you could leave the default styles checkbox on (which will enable them for the admin side as well), and remove the action that adds the styles to the public side.
-
-= 0.1.2 =
-* If you'd like the settings page to work, upgrade.
-
-= 0.1.1 =
-* Blocking bugfix. Plugin won't work unless you upgrade
-
-= .1 =
-Yes, you should totally upgrade to the first version released...
