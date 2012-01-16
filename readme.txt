@@ -21,11 +21,6 @@ Unfortunately screenshots don't really capture how cool these look while animati
 
 == Frequently Asked Questions ==
 
-= Only text is displayed in my sidebar =
-Unfortunately shortcode is not interpreted in the sidebar. For now you can add this to functions.php `add_filter('widget_text', 'do_shortcode');`
-
-The plan is to release a dedicated sidebar widget soon.
-
 = It doesn't look right.. =
 This project uses some cutting-edge CSS3 to make things look cooler like drop shadow, inner-shadow, border-radius, etc. If it doesn't look right in your browser first, consider upgrading, second: let me know what browser you're using to see if I want to consider support. Things should degrade gracefully for non-cutting edge browsers (although IE6 is still going to look like crap no matter what you do). You're welcome to write your own CSS to override what I've already written (or un-check "Default Styles" on the settings page and roll-yer-own).
 
