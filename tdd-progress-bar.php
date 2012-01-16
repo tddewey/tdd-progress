@@ -205,7 +205,7 @@ function tdd_pb_get_bars( $args ){
 		'ids' => array(),
 		'width' => 'auto',
 		'class' => '',
-		'default_color' => 'red',
+		'default_color' => 'td_pb_red',
 		);
 
 	$tdd_pb_options = get_option( 'tdd_pb_options');
@@ -219,7 +219,7 @@ function tdd_pb_get_bars( $args ){
 	$idsarr = array_filter( $args['ids'], 'is_numeric' );
 
 	//count if this is a race (more than one progress bar being displayed. The race format can also be forced by passing "race" in the $class argument)
-	$race = ( count( $idsarr ) > 1 ) ? 'race' : '';
+	$race = ( count( $idsarr ) > 1 ) ? 'td_pb_race' : '';
 
 	//Set up our global container
 	$return = '<div class="tdd_pb_global_container '.$race.' '.$args['class'].'" style="width:'.strip_tags( $args['width'] ).'">';
@@ -249,10 +249,10 @@ function tdd_pb_get_bars( $args ){
 		$percentage = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_percentage', true ) );
 		$color = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_color', true ) );
 		//if no color, define a default
-		$color = (!$color) ? $args['default_color'] : $color;
+		$color = (!$color) ? $args['default_color'] : 'td_pb_'.$color;
 		$return .= '<div title="'.get_the_title() .'" class="tdd_pb_bar_container" style="background-color: #'. $tdd_pb_options["bar_background_color"] .'">';
 		if ($tdd_pb_options['display_percentage']){
-			$return .= '<div class="numbers" style="color: #'.$tdd_pb_options["percentage_color"].'">'. $percentage .'%</div>';
+			$return .= '<div class="td_pb_numbers" style="color: #'.$tdd_pb_options["percentage_color"].'">'. $percentage .'%</div>';
 		}
 		$return .= '<div class="tdd_pb_bar '. $color .'" style="width:'. $percentage .'%"></div></div>';
 	
