@@ -3,8 +3,8 @@ Contributors: taylorde
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FEQG5KTTPRRXS
 Tags: progress, shortcode
 Requires at least: 3.2.1
-Tested up to: 3.3
-Stable tag: 0.2.1
+Tested up to: 3.3.1
+Stable tag: 0.3.0
 
 Configure and display any number of percent-complete progress bars.
 
@@ -45,7 +45,14 @@ After configuring a progress bar, insert it anywhere you'd like with shortcode.
 
 Note that "id" and "ids" are interchangeable
 
+Or use the widget which accepts a comma separated list of Ids to display.
+
 == Changelog ==
+
+= 0.3 =
+* New Colors! Added Black and Silver to the mix.
+* Updates the CSS classes to all be prefixed by tdd_pb. This may break any custom CSS you were using, but it eliminates conflicts with other themes and plugins.
+* Adds basic widget functionality making it much easier to add progress bars into widgetized areas.
 
 = 0.2.1 =
 * fixes an issue where the get_text_domain() function was referencing a non-existant directory and throwing an error

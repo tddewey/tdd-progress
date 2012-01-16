@@ -96,6 +96,23 @@
 	background-position: 0px -465px;
 	}
 
+.td_pb_black {
+	background-position: 0px -500px;
+	}
+
+.td_pb_race .td_pb_black {
+	background-position: 0px -515px;
+	}
+
+.td_pb_silver {
+	background-position: 0px -550px;
+	}
+
+.td_pb_race .td_pb_silver {
+	background-position: 0px -565px;
+	}
+
+
 .tdd_pb_bar {
 	background-image:url(../images/bars.png);
 	width:0;
