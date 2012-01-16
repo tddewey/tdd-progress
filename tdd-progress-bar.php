@@ -144,7 +144,12 @@ add_action( 'admin_menu', 'tdd_pb_admin_menu' );
 * Admin pages and related functions
 */
 include plugin_dir_path( __FILE__ ). 'inc/admin.php';
-	
+
+/*
+* Widget Class
+*/
+include plugin_dir_path( __FILE__ ). 'inc/widget.php';
+
 /*
 * Shortcode
 *
@@ -157,8 +162,6 @@ include plugin_dir_path( __FILE__ ). 'inc/admin.php';
 
 * Also any of the above formats using shortcode [tdd_pb]
 */
-
-
 function tdd_pb_shortcode( $args ){
 
 	$args = shortcode_atts( array(
