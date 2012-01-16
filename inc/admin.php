@@ -52,7 +52,7 @@ function tdd_pb_metabox_display($post) {
 	
 	<?php echo tdd_pb_get_bars( array(
 		'ids' => array( get_the_ID() ),
-		'class' => 'race',
+		'class' => 'tdd_pb_race',
 	) );
 	?>
 	
@@ -100,7 +100,7 @@ function tdd_pb_custom_columns( $column ){
 		case 'progress_bar':
 			echo tdd_pb_get_bars( array( 
 				'ids' => array( $post->ID ),
-				'class' => 'race',
+				'class' => 'td_pb_race',
 			) );
 
 			break;
