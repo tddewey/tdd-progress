@@ -14,6 +14,7 @@ $colors = array (
 	'yellow' => __( 'Yellow', 'tdd_pb' ),
 	'orange' => __( 'Orange', 'tdd_pb' ),
 	'red'	=> __( 'Red', 'tdd_pb' ),
+	'black' => __( 'Black', 'tdd_pb' ),
 	'silver' => __( 'Silver', 'tdd_pb' ),
 	);
 
