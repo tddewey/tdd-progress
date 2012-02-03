@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: progress, shortcode
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 0.3.0
+Stable tag: 0.3.2
 
 Configure and display any number of percent-complete progress bars.
 
@@ -44,6 +44,18 @@ Or use the widget which accepts a comma separated list of Ids to display.
 
 == Changelog ==
 
+= 0.3.2 =
+* Added a description textbox to the progress bar widget. Displays below the progress bar.
+* Modified the title tag of the progress bar to include the percentage.
+* Added role="progressbar" and aria hints to the progress bar container
+* Fixed an issue where the title of the widget instance wasn't be included in the widget admin form container header. (confusing, I know). Basically, it's easier to see what the widgets are when they are all collapsed.
+* Animation Javascript is now loaded minimized when WP_DEBUG == false
+* Props to user ablereach for providing the input for much of this update, specifically the input on accessibility.
+
+= 0.3.1 =
+* Now loads a minimized and optimized version of the stylesheet when WP_DEBUG == false
+* Stylesheet run through prefixr which may broaden browser support for the advanced CSS3 bling I use.
+
 = 0.3 =
 * New Colors! Added Black and Silver to the mix.
 * Updates the CSS classes to all be prefixed by tdd_pb. This may break any custom CSS you were using, but it eliminates conflicts with other themes and plugins.
@@ -74,4 +86,13 @@ Or use the widget which accepts a comma separated list of Ids to display.
 * Left some debugging code for the advanced debug bar in the script. Have to remove it to make this thing work.
 
 = .1 =
-The first version
+The first version admin side as well), and remove the action that adds the styles to the public side.
+
+= 0.1.2 =
+* If you'd like the settings page to work, upgrade.
+
+= 0.1.1 =
+* Blocking bugfix. Plugin won't work unless you upgrade
+
+= .1 =
+Yes, you should totally upgrade to the first version released...

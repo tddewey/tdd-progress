@@ -3,7 +3,7 @@
 Plugin Name: TDD Progress Bars
 Plugin URI: http://github.com/tddewey/tdd-progress
 Description: Manage and display progress bars
-Version: 0.2.1
+Version: 0.3.1
 Author: Taylor D. Dewey
 Author URI: http://websitesthatdontsuck.com
 Licence: GPLv3
@@ -71,8 +71,11 @@ function tdd_pb_install() {
 * Action hook only fires if $default_css = true
 */
 function tdd_pb_load_styles() {
-	wp_enqueue_style( 'tdd_pb_style', plugins_url( 'css/default.css', __FILE__ ), '', '.1' );
-	
+	if (WP_DEBUG) {
+		wp_enqueue_style( 'tdd_pb_style', plugins_url( 'css/default.css', __FILE__ ), '', '.3' );
+	} else {
+		wp_enqueue_style( 'tdd_pb_style', plugins_url( 'css/default.min.css', __FILE__ ), '', '.3' );
+	}
 }
 
 if ( $tdd_pb_options['default_css'] ){
@@ -91,7 +94,11 @@ if ( $tdd_pb_options['default_css'] ){
 */
 function tdd_pb_load_js(){
 	wp_enqueue_script( 'jquery' );
-	wp_enqueue_script( 'tdd_pb_js', plugins_url( 'js/animate.js', __FILE__ ), 'jquery', '.1', true );
+	if (WP_DEBUG) {
+		wp_enqueue_script( 'tdd_pb_js', plugins_url( 'js/animate.js', __FILE__ ), 'jquery', '.3', true );
+	} else {
+		wp_enqueue_script( 'tdd_pb_js', plugins_url( 'js/animate.min.js', __FILE__ ), 'jquery', '.3', true );
+	}
 }
 
 if ( $tdd_pb_options['animate'] ){
@@ -250,7 +257,7 @@ function tdd_pb_get_bars( $args ){
 		$color = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_color', true ) );
 		//if no color, define a default
 		$color = (!$color) ? $args['default_color'] : 'td_pb_'.$color;
-		$return .= '<div title="'.get_the_title() .'" class="tdd_pb_bar_container" style="background-color: #'. $tdd_pb_options["bar_background_color"] .'">';
+		$return .= '<div title="'.get_the_title() .': '.$percentage.'%" class="tdd_pb_bar_container" style="background-color: #'. $tdd_pb_options["bar_background_color"] .'" role="progressbar" aria-valuenow="'.$percentage.'" aria-valuemax="100" aria-valuemin="0">';
 		if ($tdd_pb_options['display_percentage']){
 			$return .= '<div class="td_pb_numbers" style="color: #'.$tdd_pb_options["percentage_color"].'">'. $percentage .'%</div>';
 		}

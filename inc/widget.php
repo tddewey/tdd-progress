@@ -23,16 +23,21 @@ class TDD_Progress_Widget extends WP_Widget {
 		$defaults = array(
 			'title' => 'Progress',
 			'ids' => '',
+			'desc' => '',
 		);
 		
 		//merge defaults with existing instance
 		$instance = wp_parse_args ( (array) $instance, $defaults );
 		$title = $instance['title'];
 		$ids = $instance['ids'];
+		$desc = $instance['desc'];
 		?>
-		<p>Title: <input class="widefat" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" /></p>
+		<p>Title: <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" /></p>
 
-		<p>Progress Bar IDs: <input class="widefat" name="<?php echo $this->get_field_name( 'ids' ); ?>" type="text" value="<?php echo esc_attr( $ids ); ?>" /><br><small>Comma separated</small></p>
+		<p>Progress Bar IDs: <input class="widefat" id="<?php echo $this->get_field_id( 'ids' ); ?>" name="<?php echo $this->get_field_name( 'ids' ); ?>" type="text" value="<?php echo esc_attr( $ids ); ?>" /><br><small>Comma separated</small></p>
+		
+		<p>Description:
+		<textarea class="widefat" id="<?php echo $this->get_field_id( 'desc '); ?>" name="<?php echo $this->get_field_name( 'desc' ); ?>"><?php echo esc_attr($desc); ?></textarea>
 
 		<?php
 	}
@@ -41,6 +46,7 @@ class TDD_Progress_Widget extends WP_Widget {
 		$instance = $old_instance;
 		$instance['title'] = strip_tags ( $new_instance['title'] );
 		$instance['ids'] = strip_tags( $new_instance['ids'] );
+		$instance['desc'] = strip_tags( $new_instance['desc'] );
 		return $instance;
 	}
 	
@@ -59,7 +65,8 @@ class TDD_Progress_Widget extends WP_Widget {
 			);
 
 		echo tdd_pb_get_bars( $args );
-
+		
+		echo ( $instance['desc'] ) ? wpautop($instance['desc']) : '' ;
 		
 		echo $after_widget;
 	}
