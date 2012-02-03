@@ -36,7 +36,7 @@ function tdd_pb_metabox_display($post) {
 
 	<table class="form-table">
 		<tr valign="top">
-			<th scope="row"><label for="td_pb_color">Bar Color</label></th>
+			<th scope="row"><label for="tdd_pb_color">Bar Color</label></th>
 			<td><select name="tdd_pb_color">
 				<?php global $colors; ?>
 				<?php foreach ($colors as $color=>$label ): ?>
@@ -102,7 +102,7 @@ function tdd_pb_custom_columns( $column ){
 		case 'progress_bar':
 			echo tdd_pb_get_bars( array( 
 				'ids' => array( $post->ID ),
-				'class' => 'td_pb_race',
+				'class' => 'tdd_pb_race',
 			) );
 
 			break;

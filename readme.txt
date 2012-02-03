@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: progress, shortcode
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 0.3.2
+Stable tag: 0.3.5
 
 Configure and display any number of percent-complete progress bars.
 
@@ -43,6 +43,15 @@ Note that "id" and "ids" are interchangeable
 Or use the widget which accepts a comma separated list of Ids to display.
 
 == Changelog ==
+
+= 0.3.5 =
+* Fixed: The malformed CSS classes were still present in the minified file causing errors. This has been fixed.
+
+= 0.3.4 =
+* SVN issue means anyone downloading 0.3.3 may have only received a subset of the files needed. This is a version bump to get around that, no other changes.
+
+= 0.3.3 =
+* Fixed: Some CSS classes were malformed causing the wrong color progress bar to display.
 
 = 0.3.2 =
 * Added a description textbox to the progress bar widget. Displays below the progress bar.

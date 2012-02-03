@@ -29,87 +29,87 @@
 	background-position: 0px -50px;
 }
 
-.td_pb_race .td_pb_orange {
+.tdd_pb_race .tdd_pb_orange {
 	background-position: 0px -62px;
 }
 
-.td_pb_yellow {
+.tdd_pb_yellow {
 	background-position: 0px -100px;
 }
 
-.td_pb_race .td_pb_yellow {
+.tdd_pb_race .tdd_pb_yellow {
 	background-position: 0px -112px;
 }
 
-.td_pb_green {
+.tdd_pb_green {
 	background-position: 0px -150px;
 }
 
-.td_pb_race .td_pb_green {
+.tdd_pb_race .tdd_pb_green {
 	background-position: 0px -162px;
 }
 
-.td_pb_teal {
+.tdd_pb_teal {
 	background-position: 0px -200px;
 }
 
-.td_pb_race .td_pb_teal {
+.tdd_pb_race .tdd_pb_teal {
 	background-position: 0px -212px;
 }
 
-.td_pb_lightblue {
+.tdd_pb_lightblue {
 	background-position: 0px -250px;
 }
 
-.td_pb_race .td_pb_lightblue {
+.tdd_pb_race .tdd_pb_lightblue {
 	background-position: 0px -262px;
 }
 
-.td_pb_blue {
+.tdd_pb_blue {
 	background-position: 0px -300px;
 }
 
-.td_pb_race .td_pb_blue {
+.tdd_pb_race .tdd_pb_blue {
 	background-position: 0px -312px;
 }
 
-.td_pb_purple {
+.tdd_pb_purple {
 	background-position: 0px -350px;
 }
 
-.td_pb_race .td_pb_purple {
+.tdd_pb_race .tdd_pb_purple {
 	background-position: 0px -362px;
 }
 
-.td_pb_fuchsia {
+.tdd_pb_fuchsia {
 	background-position: 0px -400px;
 }
 
-.td_pb_race .td_pb_fuchsia {
+.tdd_pb_race .tdd_pb_fuchsia {
 	background-position: 0px -415px;
 }
 
-.td_pb_strawberry {
+.tdd_pb_strawberry {
 	background-position: 0px -450px;
 }
 
-.td_pb_race .td_pb_strawberry {
+.tdd_pb_race .tdd_pb_strawberry {
 	background-position: 0px -465px;
 }
 
-.td_pb_black {
+.tdd_pb_black {
 	background-position: 0px -500px;
 }
 
-.td_pb_race .td_pb_black {
+.tdd_pb_race .tdd_pb_black {
 	background-position: 0px -515px;
 }
 
-.td_pb_silver {
+.tdd_pb_silver {
 	background-position: 0px -550px;
 }
 
-.td_pb_race .td_pb_silver {
+.tdd_pb_race .tdd_pb_silver {
 	background-position: 0px -565px;
 }
 
@@ -126,16 +126,16 @@
 	border-bottom-right-radius: 15px 100px;
 }
 
-.td_pb_race .tdd_pb_bar_container {
+.tdd_pb_race .tdd_pb_bar_container {
 	height: 25px;
 }
 
-.td_pb_race .tdd_pb_bar_container .td_pb_numbers {
+.tdd_pb_race .tdd_pb_bar_container .tdd_pb_numbers {
 	font-size: 15px;
 	margin-top: 4px;
 }
 
-.td_pb_numbers {
+.tdd_pb_numbers {
 	text-shadow: -1px -1px 1px #000;
 	font-size: 30px;
 	margin-top: 7px;
