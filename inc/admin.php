@@ -112,20 +112,6 @@ function tdd_pb_metabox_display( $post ) {
 <?php
 }
 
-/**
- * tdd_float_number_only
- * Takes the input from a form field that expects a number, strips out everything except for numbers and decimals (.)
- * Used for sanitation, not validation purposes
- * @param string|int $str The input to filter.
- * @return str The returned string
- */
-function tdd_float_number_only( $str ){
-	$regexreturn = array();
-	preg_match_all("/\.?[0-9]\.?/", $str, $regexreturn ); // Selects out just the numbers and any decimal places.
-	$regexreturn = implode( '', $regexreturn[0] ); // Organizes the regex array back into a string.
-	return $regexreturn;
-}
-
 /*
 * Saves the meta box info for the post
 */
@@ -135,17 +121,17 @@ function tdd_pb_metabox_save( $post_id ) {
 	}
 
 	if ( isset( $_POST['tdd_pb_percentage'] ) ) {
-		$tdd_pb_percentage = tdd_float_number_only( $_POST['tdd_pb_percentage'] );
+		$tdd_pb_percentage = filter_var( $_POST['tdd_pb_percentage'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ); //Requires PHP 5.2 (which is req for WP 3.2)
 		update_post_meta( $post_id, '_tdd_pb_percentage', $tdd_pb_percentage );
 	}
 
 	if ( isset( $_POST['tdd_pb_start'] ) ) {
-		$tdd_pb_start = tdd_float_number_only( $_POST['tdd_pb_start'] );
+		$tdd_pb_start = filter_var( $_POST['tdd_pb_start'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
 		update_post_meta( $post_id, '_tdd_pb_start', $tdd_pb_start );
 	}
 
 	if ( isset( $_POST['tdd_pb_end'] ) ) {
-		$tdd_pb_end = tdd_float_number_only( $_POST['tdd_pb_end'] );
+		$tdd_pb_end = filter_var( $_POST['tdd_pb_end'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
 		update_post_meta( $post_id, '_tdd_pb_end', $tdd_pb_end );
 	}
 
