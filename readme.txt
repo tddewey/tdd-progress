@@ -2,9 +2,9 @@
 Contributors: taylorde
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FEQG5KTTPRRXS
 Tags: progress, shortcode, widget
-Requires at least: 3.4
+Requires at least: 3.3
 Tested up to: 3.3.1
-Stable tag: 0.3.5
+Stable tag: 0.4
 
 Configure and display any number of percent-complete progress bars.8
 
