@@ -6,7 +6,7 @@ Requires at least: 3.3
 Tested up to: 3.3.1
 Stable tag: 0.4
 
-Configure and display any number of percent-complete progress bars.8
+Configure and display any number of percent-complete progress bars.
 
 == Description ==
 
