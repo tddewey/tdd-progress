@@ -23,7 +23,7 @@ Unfortunately screenshots don't really capture how cool these look while animati
 == Frequently Asked Questions ==
 
 = It doesn't look right.. =
-This project uses some cutting-edge CSS3 to make things look cooler like drop shadow, inner-shadow, border-radius, etc. If it doesn't look right in your browser first, consider upgrading, second: let me know what browser you're using to see if I want to consider support. Things should degrade gracefully for non-cutting edge browsers (although IE6 is still going to look like crap no matter what you do). You're welcome to write your own CSS to override what I've already written (or un-check "Default Styles" on the settings page and roll-yer-own).
+This project uses some cutting-edge CSS3 to make things look cooler like drop shadow, inner-shadow, border-radius, etc. If it doesn't look right in your browser first, consider upgrading, second: let me know what browser you're using to see if I want to consider support. Things should degrade gracefully for non-cutting edge browsers (although IE6 is still going to look like crap no matter what you do). You're welcome to write your own CSS to override what I've already written (or un-check "Default Styles" on the settings page and roll-yer-own). Of course, if it's supposed to look right and it isn't, then there may be issue you should let me know about...
 
 = How do I use the filter hook to modify a percentage? =
 Add this to your functions.php file, or your own plugin.
