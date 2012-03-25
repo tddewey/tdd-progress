@@ -3,7 +3,7 @@
 Plugin Name: TDD Progress Bars
 Plugin URI: http://github.com/tddewey/tdd-progress
 Description: Manage and display progress bars
-Version: 0.3.5
+Version: 0.4
 Author: Taylor D. Dewey
 Author URI: http://websitesthatdontsuck.com
 Licence: GPLv3
@@ -16,26 +16,26 @@ Licence: GPLv3
 			- bar background-color - default=#333;
 			- display percentage - default=true
 			- percentage color - default=#ececec;
-		
+
 		shortcode options:
 			- race height (if multiple ID's involved)
 			- width
-		
+
 		bar specific options:
 			- color/graphic
 			- percentage (or API call)
-			
+
 
 		@todo:
 			make a variety of the colored bars. Assemble into a sprite and work-in above. Only need the width to be long enough to feel random. Blend the seam.
-			
+
 			Global options page
-			
+
 			Page to add progress bars.
 				- Name
 				- Bar style
 				- Perecentage / or API call.
-				
+
 */
 
 /*
@@ -61,7 +61,7 @@ function tdd_pb_install() {
 		'display_percentage' => 1,
 		'percentage_color' => 'ececec',
 	);
-	
+
 	update_option( 'tdd_pb_options', $tdd_pb_options );
 }
 
@@ -125,7 +125,7 @@ function tdd_pb_register_post_type(){
 		'not_found' => __( 'No Progress Bars Found', 'tdd_pb' ),
 		'not_found_in_trash' => __( 'No Progress Bars Found in the Trash', 'tdd_pb' ),
 	);
-	
+
 	$args = array(
 		'labels' => $labels,
 		'public' => false,
@@ -139,7 +139,7 @@ function tdd_pb_register_post_type(){
 }
 add_action( 'init', 'tdd_pb_register_post_type' );
 
-/* 
+/*
 * Set up admin menus
 */
 function tdd_pb_admin_menu(){
@@ -177,20 +177,20 @@ function tdd_pb_shortcode( $args ){
 		'width' => 'auto',
 		'class' => '',
 		), $args );
-	
-	
+
+
 	//explode "id" and "ids" on their commas separately, then merge the arrays together
 	$idarr = explode( ',', $args['id'] );
 	$idsarr = explode( ',', $args['ids'] );
 	$idsarr = array_merge($idarr, $idsarr);
-	
+
 	//Request some bars
 	$return = tdd_pb_get_bars(array(
 		'ids' => $idsarr,
 		'width' => $args['width'],
 		'class' => $args['class'],
 	));
-	
+
 	//Return them bars
 	return $return;
 }
@@ -217,10 +217,8 @@ function tdd_pb_get_bars( $args ){
 
 	$tdd_pb_options = get_option( 'tdd_pb_options');
 
-	
 	//parse incoming arguments against default.
 	$args = wp_parse_args( $args, $defaults );
-
 
 	//Filter the array to ensure we're getting things that look like integers. Will also filter out blank array items (i.e. '' )
 	$idsarr = array_filter( $args['ids'], 'is_numeric' );
@@ -230,20 +228,21 @@ function tdd_pb_get_bars( $args ){
 
 	//Set up our global container
 	$return = '<div class="tdd_pb_global_container '.$race.' '.$args['class'].'" style="width:'.strip_tags( $args['width'] ).'">';
-	
+
 	//If there are no ids to display, this is kind of a moot proccess - so let's say so:
 	if ( count( $idsarr ) <= 0 ){
 		$return .= '<p>' . __( 'No progress bars were set, so there is nothing to display', 'tdd_pb' ). '</p></div>';
 		return $return;
 	}
-	
+
 	//Setup a new WP_Query for our progress bars.
 	$tdd_pb_query = new WP_Query();
 	$tdd_pb_query->query(array(
 		'post_type' => 'tdd_pb',
 		'posts_per_page' => -1,
 		'post__in' => $idsarr,
-		'meta_key' => '_tdd_pb_percentage'
+		'no_found_rows' => true,
+//		'meta_key' => '_tdd_pb_percentage' //Used to be this was the only, and required key. Is no longer the case...
 	));
 
 	//If there were no posts to display, again, this is moot, so let's say so:
@@ -251,18 +250,43 @@ function tdd_pb_get_bars( $args ){
 		$return .= '<p>'. __( 'No progress bars found', 'tdd_pb' ) . '</p></div>';
 		return $return;
 		}
-	
+
 	while ( $tdd_pb_query->have_posts() ): $tdd_pb_query->the_post();
 		$percentage = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_percentage', true ) );
+		$start = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_start', true ) );
+		$end = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_end', true ) );
+		$input_method = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_input_method', true ) );
+		$percentage_display = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_percentage_display', true ) );
+		$xofy_display = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_xofy_display', true ) );
+
+		if ( $input_method == 'xofy' ){
+			$calcpercentage = round( ($start/$end)*100, 2 );
+		} else {
+			$calcpercentage = $percentage;
+		}
+
+		//This filter allows you to hook in and modify the percentage, perhaps based on a fancy API call...
+		$calcpercentage = apply_filters( 'tdd_pb_calculated_percentage', $calcpercentage, get_the_ID() );
+
 		$color = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_color', true ) );
 		//if no color, define a default
 		$color = (!$color) ? $args['default_color'] : 'tdd_pb_'.$color;
-		$return .= '<div title="'.get_the_title() .': '.$percentage.'%" class="tdd_pb_bar_container" style="background-color: #'. $tdd_pb_options["bar_background_color"] .'" role="progressbar" aria-valuenow="'.$percentage.'" aria-valuemax="100" aria-valuemin="0">';
-		if ($tdd_pb_options['display_percentage']){
-			$return .= '<div class="tdd_pb_numbers" style="color: #'.$tdd_pb_options["percentage_color"].'">'. $percentage .'%</div>';
-		}
-		$return .= '<div class="tdd_pb_bar '. $color .'" style="width:'. $percentage .'%"></div></div>';
-	
+		$return .= '<div title="'.get_the_title() .': '.$calcpercentage.'%" class="tdd_pb_bar_container" style="background-color: #'. $tdd_pb_options["bar_background_color"] .'" role="progressbar" aria-valuenow="'.$calcpercentage.'" aria-valuemax="100" aria-valuemin="0">';
+		if ($tdd_pb_options['display_percentage']):
+			$return .= '<div class="tdd_pb_numbers" style="color: #'.$tdd_pb_options["percentage_color"].'">';
+
+			if ( $percentage_display == 'on' || $percentage_display === '' ){
+				$return .= $calcpercentage .'%';
+			}
+
+			if ( $xofy_display == 'on' ){
+				$return .='&nbsp;&nbsp;' . $start . ' ' . __( 'of', 'tdd_pb' ) . ' ' . $end;
+			}
+
+			$return .='</div>';
+		endif;
+		$return .= '<div class="tdd_pb_bar '. $color .'" style="width:'. $calcpercentage .'%"></div></div>';
+
 	endwhile;
 
 	//Close the progress bar container, and return everything to screen.

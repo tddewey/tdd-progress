@@ -1,12 +1,12 @@
 === TDD Progress Bar ===
 Contributors: taylorde
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FEQG5KTTPRRXS
-Tags: progress, shortcode
-Requires at least: 3.2.1
+Tags: progress, shortcode, widget
+Requires at least: 3.4
 Tested up to: 3.3.1
 Stable tag: 0.3.5
 
-Configure and display any number of percent-complete progress bars.
+Configure and display any number of percent-complete progress bars.8
 
 == Description ==
 
@@ -16,6 +16,7 @@ TDD Progress Bar allows you to track the progress of multiple projects. Actually
 1. A Progress Bar "race"
 2. Progress Bar management page showing all the colors available
 3. A solo Progress Bar
+4. Bar Options
 
 Unfortunately screenshots don't really capture how cool these look while animating...
 
@@ -23,6 +24,22 @@ Unfortunately screenshots don't really capture how cool these look while animati
 
 = It doesn't look right.. =
 This project uses some cutting-edge CSS3 to make things look cooler like drop shadow, inner-shadow, border-radius, etc. If it doesn't look right in your browser first, consider upgrading, second: let me know what browser you're using to see if I want to consider support. Things should degrade gracefully for non-cutting edge browsers (although IE6 is still going to look like crap no matter what you do). You're welcome to write your own CSS to override what I've already written (or un-check "Default Styles" on the settings page and roll-yer-own).
+
+= How do I use the filter hook to modify a percentage? =
+Add this to your functions.php file, or your own plugin.
+`	<?php
+		add_filter( 'tdd_pb_calculated_percentage', 'change_percentage', 10, 2 );
+		function change_percentage($percentage, $id){
+			//Only apply to post (bar) ID 120, if it isn't 120, just return
+			if ($id != 120)
+				return $percentage;
+
+			$newpercentage = $percentage + 10; // add 10% for effort.
+			return $newpercentage;
+		}
+	?>
+`
+You can use this to add 10%, like the example above, or do something cool like pull in data from an external API. If you come up with something fun and clever, I'd love to feature it!
 
 == Installation ==
 
@@ -43,6 +60,12 @@ Note that "id" and "ids" are interchangeable
 Or use the widget which accepts a comma separated list of Ids to display.
 
 == Changelog ==
+
+= 0.4 =
+* Progress bars can now be defined using a percentage or two numbers ( x of y ) and let the plugin do the calculation
+* The text display on the bar itself can be nothing, the percentage, the two numbers, or both. The global setting to turn this on and off still exists.
+* Changed the checkbox on the admin page to make it clear it is a global "off" switch for bar text, not just percentage.
+* Added a filter hook for the percentage being shown. This provides the ability to hook in your own method of calculating percentages. The hook name is `tdd_pb_calculated_percentage`
 
 = 0.3.5 =
 * Fixed: The malformed CSS classes were still present in the minified file causing errors. This has been fixed.
