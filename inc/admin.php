@@ -41,11 +41,11 @@ add_action( 'add_meta_boxes', 'tdd_pb_metabox_create' );
  *  - Text label (percentage)
  */
 function tdd_pb_metabox_display( $post ) {
-	$tdd_pb_color = get_post_meta( $post->ID, '_tdd_pb_color', true );
-	$tdd_pb_percentage = get_post_meta( $post->ID, '_tdd_pb_percentage', true );
+	$tdd_pb_color = esc_attr( get_post_meta( $post->ID, '_tdd_pb_color', true ) );
+	$tdd_pb_percentage = absint( get_post_meta( $post->ID, '_tdd_pb_percentage', true ) );
 	$tdd_pb_input_method = get_post_meta( $post->ID, '_tdd_pb_input_method', true );
-	$tdd_pb_start = get_post_meta( $post->ID, '_tdd_pb_start', true );
-	$tdd_pb_end = get_post_meta( $post->ID, '_tdd_pb_end', true );
+	$tdd_pb_start = intval( get_post_meta( $post->ID, '_tdd_pb_start', true ) );
+	$tdd_pb_end = intval( get_post_meta( $post->ID, '_tdd_pb_end', true ) );
 	$tdd_pb_percentage_display = get_post_meta( $post->ID, '_tdd_pb_percentage_display', true );
 	$tdd_pb_xofy_display = get_post_meta( $post->ID, '_tdd_pb_xofy_display', true );
 ?>
@@ -117,26 +117,29 @@ function tdd_pb_metabox_display( $post ) {
 */
 function tdd_pb_metabox_save( $post_id ) {
 	if ( isset( $_POST['tdd_pb_color'] ) ) {
-		update_post_meta( $post_id, '_tdd_pb_color', strip_tags( $_POST['tdd_pb_color'] ) );
+		update_post_meta( $post_id, '_tdd_pb_color', esc_attr( $_POST['tdd_pb_color'] ) );
 	}
 
 	if ( isset( $_POST['tdd_pb_percentage'] ) ) {
-		$tdd_pb_percentage = filter_var( $_POST['tdd_pb_percentage'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION ); //Requires PHP 5.2 (which is req for WP 3.2)
-		update_post_meta( $post_id, '_tdd_pb_percentage', $tdd_pb_percentage );
+		update_post_meta( $post_id, '_tdd_pb_percentage', absint( $tdd_pb_percentage ) );
 	}
 
 	if ( isset( $_POST['tdd_pb_start'] ) ) {
-		$tdd_pb_start = filter_var( $_POST['tdd_pb_start'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
-		update_post_meta( $post_id, '_tdd_pb_start', $tdd_pb_start );
+		update_post_meta( $post_id, '_tdd_pb_start', intval( $tdd_pb_start ) );
 	}
 
 	if ( isset( $_POST['tdd_pb_end'] ) ) {
-		$tdd_pb_end = filter_var( $_POST['tdd_pb_end'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
-		update_post_meta( $post_id, '_tdd_pb_end', $tdd_pb_end );
+		update_post_meta( $post_id, '_tdd_pb_end', intval( $tdd_pb_end ) );
 	}
 
 	if ( isset( $_POST['tdd_pb_input_method'] ) ){
-		update_post_meta( $post_id, '_tdd_pb_input_method', strip_tags( $_POST['tdd_pb_input_method'] ) );
+		switch ( $_POST['tdd_pb_input_method'] ){
+			case 'xofy':
+				update_post_meta( $post_id, '_tdd_pb_input_method', 'xofy' );
+				break;
+			default:
+				update_post_meta( $post_id, '_tdd_pb_input_method',  'percentage' );
+		}
 	}
 
 	if ( isset( $_POST['tdd_pb_percentage_display'] ) ){
@@ -150,14 +153,6 @@ function tdd_pb_metabox_save( $post_id ) {
 	} else {
 		update_post_meta( $post_id, '_tdd_pb_xofy_display', 'off' );
 	}
-
-	// $tdd_pb_input_method = get_post_meta( $post->ID, '_tdd_pb_input_method', true );
-	// $tdd_pb_start = get_post_meta( $post->ID, '_tdd_pb_start', true );
-	// $tdd_pb_end = get_post_meta( $post->ID, '_tdd_pb_end', true );
-	// $tdd_pb_percentage_display = get_post_meta( $post->ID, '_tdd_pb_percentage_display', true );
-	// $tdd_pb_xofy_display = get_post_meta( $post->ID, '_tdd_pb_xofy_display', true );
-
-
 
 }
 add_action( 'save_post', 'tdd_pb_metabox_save' );
@@ -338,12 +333,12 @@ function tdd_pb_admin_init() {
 	add_settings_section( 'tdd_pb_sas', __( 'Scripts and Styles', 'tdd_pb' ), 'tdd_pb_admin_sasheader', __FILE__ );
 	add_settings_field( 'animate', __( 'Animate Bars', 'tdd_pb' ), 'tdd_pb_admin_form_animate', __FILE__ , 'tdd_pb_sas' );
 	add_settings_field( 'default_css', __( 'Use Default CSS', 'tdd_pb' ), 'tdd_pb_admin_form_default_css', __FILE__, 'tdd_pb_sas' );
+	add_settings_field( 'bar_background_color', __( 'Color of Bar Background', 'tdd_pb' ), 'tdd_pb_admin_form_bar_background_color', __FILE__, 'tdd_pb_sas' );
 
 	//register Percent section & controls
-	add_settings_section( 'tdd_pb_percent', __( 'Percentage Displays', 'tdd_pb' ), 'tdd_pb_admin_percentheader', __FILE__ );
+	add_settings_section( 'tdd_pb_percent', __( 'Text Overlay Displays', 'tdd_pb' ), 'tdd_pb_admin_percentheader', __FILE__ );
 	add_settings_field( 'display_percentage', __( 'Display Text on the Bar', 'tdd_pb' ), 'tdd_pb_admin_form_perecent_display', __FILE__, 'tdd_pb_percent' );
-	add_settings_field( 'percentage_color', __( 'Color of Percentage Text', 'tdd_pb' ), 'tdd_pb_admin_form_percentage_color', __FILE__, 'tdd_pb_percent' );
-	add_settings_field( 'bar_background_color', __( 'Color of Bar Background', 'tdd_pb' ), 'tdd_pb_admin_form_bar_background_color', __FILE__, 'tdd_pb_percent' );
+	add_settings_field( 'percentage_color', __( 'Color of Overlay Text', 'tdd_pb' ), 'tdd_pb_admin_form_percentage_color', __FILE__, 'tdd_pb_percent' );
 
 }
 add_action( 'admin_init', 'tdd_pb_admin_init' );
@@ -368,6 +363,10 @@ function tdd_pb_admin_form_default_css() {
 	echo "<input name='tdd_pb_options[default_css]' id='default_css' type='checkbox' ".$checked.">";
 }
 
+function tdd_pb_admin_form_bar_background_color() {
+	$options = get_option( 'tdd_pb_options' );
+	echo "#<input name='tdd_pb_options[bar_background_color]' id='bar_backround_color' type='text' value='{$options['bar_background_color']}' maxlength='6' size='6' />";
+}
 
 //Percentage displays section header
 function tdd_pb_admin_percentheader() {
@@ -388,18 +387,14 @@ function tdd_pb_admin_form_percentage_color() {
 	_e( "#<input name='tdd_pb_options[percentage_color]' id='percentage_color' type='text' value='{$options['percentage_color']}' maxlength='6' size='6' />", 'tdd_pb' );
 }
 
-function tdd_pb_admin_form_bar_background_color() {
-	$options = get_option( 'tdd_pb_options' );
-	echo "#<input name='tdd_pb_options[bar_background_color]' id='bar_backround_color' type='text' value='{$options['bar_background_color']}' maxlength='6' size='6' />";
-}
 
 //validate
 function tdd_pb_options_validate( $input ) {
 
 	//whitelist checkboxes (add them back in, even if false)
-	$input['display_percentage'] =  ( isset( $input['display_percentage'] ) ) ? $input['display_percentage'] : false;
-	$input['animate'] =  ( isset( $input['animate'] ) ) ? $input['animate'] : false;
-	$input['default_css'] =  ( isset( $input['default_css'] ) ) ? $input['default_css'] : false;
+	$input['display_percentage'] =  isset( $input['display_percentage'] ) ? true : false;
+	$input['animate'] =  isset( $input['animate'] ) ? true : false;
+	$input['default_css'] =  isset( $input['default_css'] ) ? true : false;
 
 	return $input;
 }

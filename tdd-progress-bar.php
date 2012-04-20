@@ -227,7 +227,7 @@ function tdd_pb_get_bars( $args ){
 	$race = ( count( $idsarr ) > 1 ) ? 'tdd_pb_race' : '';
 
 	//Set up our global container
-	$return = '<div class="tdd_pb_global_container '.$race.' '.$args['class'].'" style="width:'.strip_tags( $args['width'] ).'">';
+	$return = '<div class="tdd_pb_global_container '.$race.' '. esc_attr( $args['class'] ).'" style="width:'. esc_attr(strip_tags( $args['width'] ) ).'">';
 
 	//If there are no ids to display, this is kind of a moot proccess - so let's say so:
 	if ( count( $idsarr ) <= 0 ){
@@ -271,21 +271,21 @@ function tdd_pb_get_bars( $args ){
 		$color = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_color', true ) );
 		//if no color, define a default
 		$color = (!$color) ? $args['default_color'] : 'tdd_pb_'.$color;
-		$return .= '<div title="'.get_the_title() .': '.$calcpercentage.'%" class="tdd_pb_bar_container" style="background-color: #'. $tdd_pb_options["bar_background_color"] .'" role="progressbar" aria-valuenow="'.$calcpercentage.'" aria-valuemax="100" aria-valuemin="0">';
+		$return .= '<div title="'.get_the_title() .': '. absint( $calcpercentage ).'%" class="tdd_pb_bar_container" style="background-color: #'. esc_attr( $tdd_pb_options["bar_background_color"] ) .'" role="progressbar" aria-valuenow="'. absint( $calcpercentage ).'" aria-valuemax="100" aria-valuemin="0">';
 		if ($tdd_pb_options['display_percentage']):
-			$return .= '<div class="tdd_pb_numbers" style="color: #'.$tdd_pb_options["percentage_color"].'">';
+			$return .= '<div class="tdd_pb_numbers" style="color: #'. esc_attr( $tdd_pb_options["percentage_color"] ).'">';
 
 			if ( $percentage_display == 'on' || $percentage_display === '' ){
-				$return .= $calcpercentage .'%';
+				$return .= absint( $calcpercentage ) .'%';
 			}
 
 			if ( $xofy_display == 'on' ){
-				$return .='&nbsp;&nbsp;' . $start . ' ' . __( 'of', 'tdd_pb' ) . ' ' . $end;
+				$return .='&nbsp;&nbsp;' .intval( $start ) . ' ' . __( 'of', 'tdd_pb' ) . ' ' . intval( $end );
 			}
 
 			$return .='</div>';
 		endif;
-		$return .= '<div class="tdd_pb_bar '. $color .'" style="width:'. $calcpercentage .'%"></div></div>';
+		$return .= '<div class="tdd_pb_bar '. esc_attr( $color ) .'" style="width:'. absint( $calcpercentage ) .'%"></div></div>';
 
 	endwhile;
 
