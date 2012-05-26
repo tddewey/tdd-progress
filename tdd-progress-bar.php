@@ -252,6 +252,8 @@ function tdd_pb_get_bars( $args ){
 		}
 
 	while ( $tdd_pb_query->have_posts() ): $tdd_pb_query->the_post();
+		$color = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_color', true ) );
+		$custom_color = tdd_pb_sanitize_color_hex_raw( get_post_meta( get_the_ID(), '_tdd_pb_custom_color', true ) );
 		$percentage = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_percentage', true ) );
 		$start = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_start', true ) );
 		$end = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_end', true ) );
@@ -268,9 +270,9 @@ function tdd_pb_get_bars( $args ){
 		//This filter allows you to hook in and modify the percentage, perhaps based on a fancy API call...
 		$calcpercentage = apply_filters( 'tdd_pb_calculated_percentage', $calcpercentage, get_the_ID() );
 
-		$color = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_color', true ) );
 		//if no color, define a default
 		$color = (!$color) ? $args['default_color'] : 'tdd_pb_'.$color;
+
 		$return .= '<div title="'.get_the_title() .': '. absint( $calcpercentage ).'%" class="tdd_pb_bar_container" style="background-color: #'. esc_attr( $tdd_pb_options["bar_background_color"] ) .'" role="progressbar" aria-valuenow="'. absint( $calcpercentage ).'" aria-valuemax="100" aria-valuemin="0">';
 		if ($tdd_pb_options['display_percentage']):
 			$return .= '<div class="tdd_pb_numbers" style="color: #'. esc_attr( $tdd_pb_options["percentage_color"] ).'">';
@@ -285,11 +287,32 @@ function tdd_pb_get_bars( $args ){
 
 			$return .='</div>';
 		endif;
-		$return .= '<div class="tdd_pb_bar '. esc_attr( $color ) .'" style="width:'. absint( $calcpercentage ) .'%"></div></div>';
+		if ( $custom_color )
+			$override_normal_css = 'background-color:#' . $custom_color;
+		$return .= '<div class="tdd_pb_bar '. esc_attr( $color ) .'" style="width:'. absint( $calcpercentage ) .'%; ' . $override_normal_css . '"></div></div>';
 
 	endwhile;
 
 	//Close the progress bar container, and return everything to screen.
 	$return .= '</div>';
 	return $return;
+}
+
+/**
+ * Function to sanitize a hex color string. Taken from this ticket, so it may be in core eventually:
+ * http://core.trac.wordpress.org/attachment/ticket/19100/19100.2.diff
+ * @param  str $color suspected hex color string
+ * @return str        sanitized color hex string
+ */
+function tdd_pb_sanitize_color_hex_raw( $color ) {
+	$default = '';
+	$color = trim( strtolower( urldecode( $color ) ), "# \t\n\r\0\x0B" );
+
+	if ( ! in_array( strlen( $color ), array( 3, 6 ) ) )
+	        return $default;
+
+	if ( ! preg_match( "/(([a-f0-9]){3}){1,2}$/i", $color ) )
+	    return $default;
+
+	return $color;
 }

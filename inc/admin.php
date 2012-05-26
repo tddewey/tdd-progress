@@ -41,13 +41,47 @@ add_action( 'add_meta_boxes', 'tdd_pb_metabox_create' );
  *  - Text label (percentage)
  */
 function tdd_pb_metabox_display( $post ) {
-	$tdd_pb_color = esc_attr( get_post_meta( $post->ID, '_tdd_pb_color', true ) );
+
+	if ( $color = get_post_meta( $post->ID, '_tdd_pb_color', true ) )
+		$tdd_pb_color = esc_attr( $color );
+	else
+		$tdd_pb_color = '2EB0B1';
+
+	if ( $input_method = get_post_meta( $post->ID, '_tdd_pb_input_method', true ) ){
+		$whitelist = array( 'percentage', 'xofy' );
+		if ( in_array( $input_method, $whitelist ) )
+			$tdd_pb_input_method = $input_method;
+		else
+			$tdd_pb_input_method = 'percentage';
+	} else {
+			$tdd_pb_input_method = 'percentage';
+	}
+
 	$tdd_pb_percentage = absint( get_post_meta( $post->ID, '_tdd_pb_percentage', true ) );
-	$tdd_pb_input_method = get_post_meta( $post->ID, '_tdd_pb_input_method', true );
+	$tdd_pb_custom_color = tdd_pb_sanitize_color_hex_raw( get_post_meta( $post->ID, '_tdd_pb_custom_color', true ) );
 	$tdd_pb_start = intval( get_post_meta( $post->ID, '_tdd_pb_start', true ) );
 	$tdd_pb_end = intval( get_post_meta( $post->ID, '_tdd_pb_end', true ) );
-	$tdd_pb_percentage_display = get_post_meta( $post->ID, '_tdd_pb_percentage_display', true );
-	$tdd_pb_xofy_display = get_post_meta( $post->ID, '_tdd_pb_xofy_display', true );
+
+	if ( $percentage_display = get_post_meta( $post->ID, '_tdd_pb_percentage_display', true ) ){
+		$whitelist = array( 'on', 'off' );
+		if ( in_array( $percentage_display, $whitelist ) )
+			$tdd_pb_percentage_display = $percentage_display;
+		else
+			$tdd_pb_percentage_display = 'on';
+	} else {
+		$tdd_pb_percentage_display = 'on';
+	}
+
+	if ( $xofy_display = get_post_meta( $post->ID, '_tdd_pb_xofy_display', true ) ){
+		$whitelist = array( 'on', 'off' );
+		if ( in_array( $xofy_display, $whitelist ) )
+			$tdd_pb_xofy_display = $xofy_display;
+		else
+			$tdd_pb_xofy_display = 'off';
+	} else {
+		$tdd_pb_xofy_display = 'off';
+	}
+
 ?>
 
 	<table class="form-table">
@@ -56,9 +90,13 @@ function tdd_pb_metabox_display( $post ) {
 			<td><select name="tdd_pb_color">
 				<?php global $colors; ?>
 				<?php foreach ( $colors as $color=>$label ): ?>
-					<option value="<?php echo $color; ?>" <?php selected( $tdd_pb_color, $color ); ?>"><?php echo $label; ?></option>
+					<option value="<?php echo $color; ?>" <?php selected( $tdd_pb_color, $color ); ?>><?php echo $label; ?></option>
 				<?php endforeach; ?>
-				</select></td>
+				</select>
+
+				<label for="tdd_pb_custom_color">or custom:</label>
+				<input type="text" class="color" name="tdd_pb_custom_color" id="tdd_pb_custom_color" size="6" value="<?php echo $tdd_pb_custom_color; ?>">
+			</td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><?php _e( 'Calculation Mode', 'tdd_pb' ); ?></th>
@@ -120,16 +158,20 @@ function tdd_pb_metabox_save( $post_id ) {
 		update_post_meta( $post_id, '_tdd_pb_color', esc_attr( $_POST['tdd_pb_color'] ) );
 	}
 
+	if ( isset( $_POST['tdd_pb_custom_color'] ) ){
+		update_post_meta( $post_id, '_tdd_pb_custom_color', tdd_pb_sanitize_color_hex_raw( $_POST['tdd_pb_custom_color'] ) );
+	}
+
 	if ( isset( $_POST['tdd_pb_percentage'] ) ) {
-		update_post_meta( $post_id, '_tdd_pb_percentage', absint( $tdd_pb_percentage ) );
+		update_post_meta( $post_id, '_tdd_pb_percentage', absint( $_POST['tdd_pb_percentage'] ) );
 	}
 
 	if ( isset( $_POST['tdd_pb_start'] ) ) {
-		update_post_meta( $post_id, '_tdd_pb_start', intval( $tdd_pb_start ) );
+		update_post_meta( $post_id, '_tdd_pb_start', intval( $_POST['tdd_pb_start'] ) );
 	}
 
 	if ( isset( $_POST['tdd_pb_end'] ) ) {
-		update_post_meta( $post_id, '_tdd_pb_end', intval( $tdd_pb_end ) );
+		update_post_meta( $post_id, '_tdd_pb_end', intval( $_POST['tdd_pb_end'] ) );
 	}
 
 	if ( isset( $_POST['tdd_pb_input_method'] ) ){
