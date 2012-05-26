@@ -346,97 +346,160 @@ function tdd_pb_quick_edit_button( $actions, $post ) {
 }
 add_filter( 'post_row_actions', 'tdd_pb_quick_edit_button', 10, 2 );
 
+/**
+ * Class sets up and handles the global settings page for the progress bar. Settings sub-panel is attached to the custom post type menu.
+ */
+class TDD_PB_Admin_Settings {
 
-/*
-* View Settings admin page
-*/
-function tdd_pb_view_settings() {
-	$tdd_pb_options = get_option( 'tdd_pb_options' );
+	function __construct(){
+		add_action( 'admin_menu', array( $this, 'add_submenu' ) );
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
+	}
 
-?>
-<div class="wrap">
-	<?php screen_icon( 'plugins' ); ?>
-	<h2><?php _e( 'TDD Progress Bars', 'tdd_pb' ); ?></h2>
+	/**
+	 * Add the sub-menu to the Progress Bars custom post type.
+	 */
+	function add_submenu(){
+		add_submenu_page( 'edit.php?post_type=tdd_pb', 'TDD Progress Bars - Settings', 'Settings', 'manage_options', 'settings', array( $this, 'render_settings_page' ) );
+	}
 
-	<form action="options.php" method="post">
-	<?php settings_fields( 'tdd_pb_options' ); ?>
-	<?php do_settings_sections(  __FILE__ ); ?>
-	<input name="Submit" type="submit" value="<?php _e( 'Save Changes', 'tdd_pb' ); ?>" class="button-primary" />
-	</form>
-</div>
-<?php
+	/**
+	 * Renders the settings page. Fired via callback in $this->add_submenu
+	 */
+	function render_settings_page(){
+		?>
+		<div class="wrap">
+			<?php screen_icon( 'plugins' ); ?>
+			<h2><?php _e( 'TDD Progress Bars', 'tdd_pb' ); ?></h2>
+
+			<?php if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == true ): ?>
+				<div class="updated"><p><strong><?php _e('Settings saved.'); ?></strong></p></div>
+			<?php endif; ?>
+
+			<form action="options.php" method="post">
+				<?php settings_fields( 'tdd_pb_options' ); ?>
+				<?php do_settings_sections(  __FILE__ ); ?>
+				<input name="Submit" type="submit" value="<?php _e( 'Save Changes', 'tdd_pb' ); ?>" class="button-primary" />
+			</form>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Hooked in the construct() to admin_init
+	 */
+	function register_settings(){
+		register_setting( 'tdd_pb_options', 'tdd_pb_options', array( $this, 'validate' ) );
+
+		//register Scripts and Styles section & controls
+		add_settings_section( 'tdd_pb_sas', __( 'Scripts and Styles', 'tdd_pb' ), array( $this, 'sasheader' ), __FILE__ );
+		add_settings_field( 'animate', __( 'Animate Bars', 'tdd_pb' ), array( $this, 'setting_animate' ), __FILE__ , 'tdd_pb_sas' );
+		add_settings_field( 'default_css', __( 'Use Default CSS', 'tdd_pb' ), array( $this, 'setting_css' ), __FILE__, 'tdd_pb_sas' );
+		add_settings_field( 'bar_background_color', __( 'Color of Bar Background', 'tdd_pb' ), array( $this, 'setting_bar_background_color' ), __FILE__, 'tdd_pb_sas' );
+		add_settings_field( 'single_height', __( 'Default height for a single progress bar' ), array( $this, 'setting_default_single_height' ), __FILE__, 'tdd_pb_sas' );
+		add_settings_field( 'race_height', __( 'Default height when multiple bars are shown together, sometimes called "racing"' ), array( $this, 'setting_default_race_height' ), __FILE__, 'tdd_pb_sas' );
+
+		//register Percent section & controls
+		add_settings_section( 'tdd_pb_percent', __( 'Text Overlay Displays', 'tdd_pb' ), array( $this, 'percentheader' ), __FILE__ );
+		add_settings_field( 'display_percentage', __( 'Display Text on the Bar', 'tdd_pb' ), array( $this, 'setting_perecent_display' ), __FILE__, 'tdd_pb_percent' );
+		add_settings_field( 'percentage_color', __( 'Color of Overlay Text', 'tdd_pb' ), array( $this, 'setting_percentage_color' ), __FILE__, 'tdd_pb_percent' );
+
+	}
+
+	function get_options(){
+		$options = get_option('tdd_pb_options');
+
+		$mergedoptions = wp_parse_args( $options, array(
+			'animate' => true,
+			'default_css' => true,
+			'bar_background_color' => '333333',
+			'single_height' => '50',
+			'race_height' => '25',
+			'display_percentage' => true,
+			'percentage_color' => 'ececec',
+			) );
+
+		return $mergedoptions;
+	}
+
+	function sasheader() {
+		_e( "<p>The following two boxes allow you to stop including the animation javascript and the default CSS on each page load. It's highly suggested that you don't turn off the Default CSS option unless you have a replacement in mind. The Animate Bars option can be turned off freely if you'd prefer the bars didn't have that cool animation (or you'd rather not load the required javascript)</p>", 'tdd_pb' );
+	}
+
+	//Animate Checkbox
+	function setting_animate() {
+		$options = $this->get_options();
+		?>
+		<input name="tdd_pb_options[animate]" id="animate" type="checkbox" <?php checked( $options['animate'] ); ?>> <br />
+		<?php _e( "<small>This script depends on jQuery, so it will ensure that is loaded as well</small>", 'tdd_pb' ); ?>
+		<?
+	}
+
+	//Default CSS Checkbox
+	function setting_css() {
+		$options = $this->get_options();
+		?>
+		<input name="tdd_pb_options[default_css]" id="default_css" type="checkbox" <?php checked( $options['default_css'] ); ?>>
+		<?php
+	}
+
+	function setting_bar_background_color() {
+		$options = $this->get_options();
+		?>
+		#<input name="tdd_pb_options[bar_background_color]" id="bar_backround_color" type="text" value="<?php echo tdd_pb_sanitize_color_hex_raw( $options['bar_background_color'] ); ?>" size="6" />
+		<?php
+	}
+
+	function setting_default_single_height() {
+		$options = $this->get_options();
+		?>
+		<input name="tdd_pb_options[single_height]" id="single_height" type="text" value="<?php echo absint( $options['single_height'] ); ?>" size="3" />px
+		<?php
+	}
+
+	function setting_default_race_height() {
+		$options = $this->get_options();
+		?>
+		<input name="tdd_pb_options[race_height]" id="race_height" type="text" value="<?php echo absint( $options['race_height'] ); ?>" size="3" />px
+		<?php
+	}
+
+	//Percentage displays section header
+	function percentheader() {
+		_e( "<p>This is a global control to turn on and off text being displayed on the bar. Individual bars may optionally show the percentage, text (x of y), or both, however nothing will show if this box is unchecked.</p>", 'tdd_pb' );
+	}
+
+	//Percent Display Checkbox
+	function setting_perecent_display() {
+		$options = $this->get_options();
+		?>
+		<input name="tdd_pb_options[display_percentage]" id="display_percentage" type="checkbox" <?php checked( $options['display_percentage'] ) ?>>
+		<?php
+	}
+
+	//percentage_color
+	function setting_percentage_color() {
+		$options = $this->get_options();
+		?>
+		#<input name="tdd_pb_options[percentage_color]" id="percentage_color" type="text" value="<?php echo tdd_pb_sanitize_color_hex_raw( $options['percentage_color'] ); ?>" size="6" />
+		<?php
+	}
+
+	//validate
+	function validate( $input ) {
+		//whitelist checkboxes (add them back in, even if false)
+		$output['display_percentage'] =  isset( $input['display_percentage'] ) ? true : false;
+		$output['animate'] =  isset( $input['animate'] ) ? true : false;
+		$output['default_css'] =  isset( $input['default_css'] ) ? true : false;
+
+		//Sanitize other options
+		$output['bar_background_color'] = tdd_pb_sanitize_color_hex_raw( $input['bar_background_color'] );
+		$output['single_height'] = absint( $input['single_height'] );
+		$output['race_height'] = absint( $input['race_height'] );
+		$output['percentage_color'] = tdd_pb_sanitize_color_hex_raw( $input['percentage_color'] );
+
+		return $output;
+	}
+
 }
-
-//Register settings
-function tdd_pb_admin_init() {
-	register_setting( 'tdd_pb_options', 'tdd_pb_options', 'tdd_pb_options_validate' );
-
-	//register Scripts and Styles section & controls
-	add_settings_section( 'tdd_pb_sas', __( 'Scripts and Styles', 'tdd_pb' ), 'tdd_pb_admin_sasheader', __FILE__ );
-	add_settings_field( 'animate', __( 'Animate Bars', 'tdd_pb' ), 'tdd_pb_admin_form_animate', __FILE__ , 'tdd_pb_sas' );
-	add_settings_field( 'default_css', __( 'Use Default CSS', 'tdd_pb' ), 'tdd_pb_admin_form_default_css', __FILE__, 'tdd_pb_sas' );
-	add_settings_field( 'bar_background_color', __( 'Color of Bar Background', 'tdd_pb' ), 'tdd_pb_admin_form_bar_background_color', __FILE__, 'tdd_pb_sas' );
-
-	//register Percent section & controls
-	add_settings_section( 'tdd_pb_percent', __( 'Text Overlay Displays', 'tdd_pb' ), 'tdd_pb_admin_percentheader', __FILE__ );
-	add_settings_field( 'display_percentage', __( 'Display Text on the Bar', 'tdd_pb' ), 'tdd_pb_admin_form_perecent_display', __FILE__, 'tdd_pb_percent' );
-	add_settings_field( 'percentage_color', __( 'Color of Overlay Text', 'tdd_pb' ), 'tdd_pb_admin_form_percentage_color', __FILE__, 'tdd_pb_percent' );
-
-}
-add_action( 'admin_init', 'tdd_pb_admin_init' );
-
-//Scripts & Styles section header
-function tdd_pb_admin_sasheader() {
-	_e( "<p>The following two boxes allow you to stop including the animation javascript and the default CSS on each page load. It's highly suggested that you don't turn off the Default CSS option unless you have a replacement in mind. The Animate Bars option can be turned off freely if you'd prefer the bars didn't have that cool animation (or you want to save HTTP requests).</p>", 'tdd_pb' );
-}
-
-//Animate Checkbox
-function tdd_pb_admin_form_animate() {
-	$options = get_option( 'tdd_pb_options' );
-	$checked = ( $options['animate'] ) ? ' checked="checked" ' : '';
-	echo "<input name='tdd_pb_options[animate]' id='animate' type='checkbox' ". $checked ."> <br /> ";
-	_e( "<small>This script depends on jQuery, so it will ensure that is loaded as well</small>", 'tdd_pb' );
-}
-
-//Default CSS
-function tdd_pb_admin_form_default_css() {
-	$options = get_option( 'tdd_pb_options' );
-	$checked = ( $options['default_css'] ) ? ' checked="checked" ' : '';
-	echo "<input name='tdd_pb_options[default_css]' id='default_css' type='checkbox' ".$checked.">";
-}
-
-function tdd_pb_admin_form_bar_background_color() {
-	$options = get_option( 'tdd_pb_options' );
-	echo "#<input name='tdd_pb_options[bar_background_color]' id='bar_backround_color' type='text' value='{$options['bar_background_color']}' maxlength='6' size='6' />";
-}
-
-//Percentage displays section header
-function tdd_pb_admin_percentheader() {
-	_e( "<p>This is a global control to turn on and off text being displayed on the bar. Individual bars may show the percentage, text (x of y), both, or nothing if this box is checked. Bars will show nothing if this box is unchecked.</p>", 'tdd_pb' );
-}
-
-
-//Percent Display
-function tdd_pb_admin_form_perecent_display() {
-	$options = get_option( 'tdd_pb_options' );
-	$checked = ( $options['display_percentage'] ) ? ' checked="checked" ' : '';
-	echo "<input name='tdd_pb_options[display_percentage]' id='display_percentage' type='checkbox' ". $checked .">";
-}
-
-//percentage_color
-function tdd_pb_admin_form_percentage_color() {
-	$options = get_option( 'tdd_pb_options' );
-	_e( "#<input name='tdd_pb_options[percentage_color]' id='percentage_color' type='text' value='{$options['percentage_color']}' maxlength='6' size='6' />", 'tdd_pb' );
-}
-
-
-//validate
-function tdd_pb_options_validate( $input ) {
-
-	//whitelist checkboxes (add them back in, even if false)
-	$input['display_percentage'] =  isset( $input['display_percentage'] ) ? true : false;
-	$input['animate'] =  isset( $input['animate'] ) ? true : false;
-	$input['default_css'] =  isset( $input['default_css'] ) ? true : false;
-
-	return $input;
-}
+new TDD_PB_Admin_Settings;

@@ -139,13 +139,6 @@ function tdd_pb_register_post_type(){
 }
 add_action( 'init', 'tdd_pb_register_post_type' );
 
-/*
-* Set up admin menus
-*/
-function tdd_pb_admin_menu(){
-	add_submenu_page( 'edit.php?post_type=tdd_pb', 'TDD Progress Bars - Settings', 'Settings', 'manage_options',  __FILE__, 'tdd_pb_view_settings' );
-}
-add_action( 'admin_menu', 'tdd_pb_admin_menu' );
 
 /*
 * Admin pages and related functions
@@ -242,7 +235,6 @@ function tdd_pb_get_bars( $args ){
 		'posts_per_page' => -1,
 		'post__in' => $idsarr,
 		'no_found_rows' => true,
-//		'meta_key' => '_tdd_pb_percentage' //Used to be this was the only, and required key. Is no longer the case...
 	));
 
 	//If there were no posts to display, again, this is moot, so let's say so:
@@ -287,8 +279,11 @@ function tdd_pb_get_bars( $args ){
 
 			$return .='</div>';
 		endif;
-		if ( $custom_color )
+		if ( $custom_color ) {
 			$override_normal_css = 'background-color:#' . $custom_color;
+		} else {
+			$override_normal_css = '';
+		}
 		$return .= '<div class="tdd_pb_bar '. esc_attr( $color ) .'" style="width:'. absint( $calcpercentage ) .'%; ' . $override_normal_css . '"></div></div>';
 
 	endwhile;
