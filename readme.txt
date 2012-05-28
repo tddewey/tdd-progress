@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: progress, shortcode, widget
 Requires at least: 3.3
 Tested up to: 3.3.1
-Stable tag: 0.4
+Stable tag: 0.5
 
 Configure and display any number of percent-complete progress bars.
 
@@ -53,13 +53,21 @@ After configuring a progress bar, insert it anywhere you'd like with shortcode.
 * Simple example: `[progress id=32]`
 * Race multiple bars: `[progress id=32,35,54]`
 * Set the bar's width: `[progress ids=12,33 width="25%"]`
+* Set the height of the bar `[progress ids=12 height="50px"]
 * Align Center: `[progress ids=4 width="50%" class="aligncenter"]`
 
 Note that "id" and "ids" are interchangeable
 
-Or use the widget which accepts a comma separated list of Ids to display.
+Or use the widget which allows you to pick bars to display
 
 == Changelog ==
+
+= 0.5 =
+* UPGRADE NOTICE: Because of the change to how bars in the widget are selected and stored your widgets will not display properly until you re-configure them. Sorry for any inconvenience, but I thought the new interface was totally worth it.
+* Much easier to select bars to display in the widget thanks to Chosen.js.
+* Custom Colors! Now possible to set custom colors for each bar using the very nice miniColors color picker
+* Lots of sanitization behind the scenes to make the plugin more secure
+* Height options. It's now possible to set the height of the progress bar(s) in the shortcode by passing a CSS height value. See "Usage" for an example
 
 = 0.4 =
 * Progress bars can now be defined using a percentage or two numbers ( x of y ) and let the plugin do the calculation
