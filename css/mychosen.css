@@ -1,0 +1,17 @@
+/** My overrides to Chosen's CSS **/
+.widget-content .chzn-container .chzn-results {
+  max-height:100px;
+}
+
+.widget-content .chzn-container .chzn-choices {
+  border-color: #DFDFDF;
+  -webkit-border-radius:3px;
+  -moz-border-radius:3px;
+  border-radius:3px;
+  background-image:none;
+}
+
+.widget-content .chzn-container-active .chzn-choices{
+	box-shadow:none;
+	border-color:#bbb;
+}

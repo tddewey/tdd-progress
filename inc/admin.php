@@ -42,10 +42,8 @@ add_action( 'add_meta_boxes', 'tdd_pb_metabox_create' );
  */
 function tdd_pb_metabox_display( $post ) {
 
-	if ( $color = get_post_meta( $post->ID, '_tdd_pb_color', true ) )
-		$tdd_pb_color = esc_attr( $color );
-	else
-		$tdd_pb_color = '2EB0B1';
+
+	$tdd_pb_color = get_post_meta( $post->ID, '_tdd_pb_color', true );
 
 	if ( $input_method = get_post_meta( $post->ID, '_tdd_pb_input_method', true ) ){
 		$whitelist = array( 'percentage', 'xofy' );
@@ -89,12 +87,13 @@ function tdd_pb_metabox_display( $post ) {
 			<th scope="row"><label for="tdd_pb_color"><?php _e( 'Bar Color', 'tdd_pb' ); ?></label></th>
 			<td><select name="tdd_pb_color">
 				<?php global $colors; ?>
+				<option>Select a color</option>
 				<?php foreach ( $colors as $color=>$label ): ?>
 					<option value="<?php echo $color; ?>" <?php selected( $tdd_pb_color, $color ); ?>><?php echo $label; ?></option>
 				<?php endforeach; ?>
 				</select>
 
-				<label for="tdd_pb_custom_color">or custom:</label>
+				<label for="tdd_pb_custom_color">or custom: #</label>
 				<input type="text" class="color" name="tdd_pb_custom_color" id="tdd_pb_custom_color" size="6" value="<?php echo $tdd_pb_custom_color; ?>">
 			</td>
 		</tr>
@@ -145,6 +144,7 @@ function tdd_pb_metabox_display( $post ) {
 			'ids' => array( get_the_ID() ),
 			'class' => 'tdd_pb_race',
 		) );
+
 ?>
 
 <?php
@@ -154,13 +154,14 @@ function tdd_pb_metabox_display( $post ) {
 * Saves the meta box info for the post
 */
 function tdd_pb_metabox_save( $post_id ) {
-	if ( isset( $_POST['tdd_pb_color'] ) ) {
-		update_post_meta( $post_id, '_tdd_pb_color', esc_attr( $_POST['tdd_pb_color'] ) );
-	}
 
-	if ( isset( $_POST['tdd_pb_custom_color'] ) ){
+	if ( isset( $_POST['tdd_pb_color'] ) )
+		update_post_meta( $post_id, '_tdd_pb_color', sanitize_html_class( $_POST['tdd_pb_color'] ) );
+
+	if ( isset( $_POST['tdd_pb_custom_color'] ) )
 		update_post_meta( $post_id, '_tdd_pb_custom_color', tdd_pb_sanitize_color_hex_raw( $_POST['tdd_pb_custom_color'] ) );
-	}
+	else
+		delete_post_meta( $post_id, '_tdd_pb_custom_color' );
 
 	if ( isset( $_POST['tdd_pb_percentage'] ) ) {
 		update_post_meta( $post_id, '_tdd_pb_percentage', absint( $_POST['tdd_pb_percentage'] ) );
@@ -251,6 +252,7 @@ function tdd_pb_add_quick_edit( $column_name, $post_type ) {
 		<div class="inline-edit-col">
 			<label class="alignright"><span class="title"><?php _e( 'Bar Color', 'tdd_pb' ); ?></span>
 				<select name="tdd_pb_color" id="tdd_pb_color">
+					<option>Select a color</option>
 				<?php global $colors; ?>
 				<?php foreach ( $colors as $color=>$label ): ?>
 					<option value="<?php echo $color; ?>"><?php echo $label; ?></option>
@@ -444,6 +446,7 @@ class TDD_PB_Admin_Settings {
 	}
 
 	function setting_bar_background_color() {
+		//TODO: For all these color options, implement a color picker.
 		$options = $this->get_options();
 		?>
 		#<input name="tdd_pb_options[bar_background_color]" id="bar_backround_color" type="text" value="<?php echo tdd_pb_sanitize_color_hex_raw( $options['bar_background_color'] ); ?>" size="6" />

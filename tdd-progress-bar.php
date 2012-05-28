@@ -191,9 +191,72 @@ function tdd_pb_shortcode( $args ){
 add_shortcode('progress', 'tdd_pb_shortcode' );
 add_shortcode('tdd_pb', 'tdd_pb_shortcode' );
 
+/**
+ * Returns the HTML for a single bar. Function can be used to generate any random bar at any time.
+ * Arguments
+ * - $percentage => Will directly affect how much of the bar is shown
+ * - $text_on_bar => Whatever text to display on the bar in the numbers div.
+ * - $title => Title attribute for the bar container
+ * - $classes => An array of classes to put in the bar container
+ * - $Width => any valid CSS width, defaults to auto (for the bar container)
+ * - $height => any valid CSS height, defaults to the setting in Progress Bars->settings
+ * - $custom_color => If there's a custom color, will be added as the CSS style background-color
+ *
+ * @param  arr $args See above for arguments
+ * @return [type]       [description]
+ */
+function tdd_pb_render_bar( $args ){
+
+	$tdd_pb_options = get_option( 'tdd_pb_options');
+
+	$args = extract( wp_parse_args( $args, $defaults = array(
+		'percentage' => 0,
+		'text_on_bar' => '',
+		'title' => '',
+		'classes' => array(),
+		'width' => 'auto',
+		'height' => $tdd_pb_options['single_height'],
+		'color_class' => 'tdd_pb_red',
+		'custom_color' => '',
+		) ) );
+
+	$container_classes = 'tdd_pb_bar_container ';
+	foreach ( $classes as $class ){
+		$container_classes .= sanitize_html_class( $class );
+	}
+
+	$container_styles = 'width: ' . esc_attr( $width ) . ';';
+	$container_styles .= ' background-color: #' . tdd_pb_sanitize_color_hex_raw( $tdd_pb_options["bar_background_color"] ) . ';';
+
+	$bar_classes = 'tdd_pb_bar ';
+	$bar_classes .= sanitize_html_class( $color_class );
+
+	$bar_styles = 'width: ' . absint( $percentage ) . '%;';
+	if ( $custom_color )
+		$bar_styles .= ' background-color: #' . tdd_pb_sanitize_color_hex_raw( $custom_color ) . ';';
+	if ( $height )
+		$bar_styles .= ' height: ' . esc_attr( $height ) . ';';
+
+
+	$return = '<div class="' . $container_classes . '" style="' . $container_styles . '" aria-valuemax="100" aria-valuemin="0" aria-valuenow="' . absint( $percentage ) . '" role="progressbar" title="' . esc_attr( $title ) . ': ' . absint( $percentage ) . '%">';
+
+	//display percentage option is now a global control to show text on the bar (percentage or xofy). Name is for back compat
+	if ($tdd_pb_options['display_percentage']){
+		$return .= '<div class="tdd_pb_numbers" style="color: #'. esc_attr( $tdd_pb_options["percentage_color"] ).'">' . esc_html( $text_on_bar ) . '</div>';
+	}
+
+	$return .= '<div class="' . $bar_classes . '" style="' . $bar_styles . '"></div>';
+
+	$return .= '</div>'; // end of the container
+
+	return $return;
+}
+
 
 /*
 * Returns a progress bar container with 1 or more progress bars
+* TODO: Cleanup, this function is a mess.
+* TODO: Cache.
 *
 * @param	array	$ids			An array of the ids of progress bars to fetch.
 * @param	str		$width			Width, specified in pixels, percents, em, whatever of the container
@@ -201,30 +264,29 @@ add_shortcode('tdd_pb', 'tdd_pb_shortcode' );
 * @param	str		$default_color	If the color of a bar isn't specified, this is the fallback.
 */
 function tdd_pb_get_bars( $args ){
-	$defaults = array(
+	$args = wp_parse_args( $args, $defaults = array(
 		'ids' => array(),
 		'width' => 'auto',
+		'height' => '100%',
 		'class' => '',
 		'default_color' => 'tdd_pb_red',
-		);
+		) );
 
 	$tdd_pb_options = get_option( 'tdd_pb_options');
 
-	//parse incoming arguments against default.
-	$args = wp_parse_args( $args, $defaults );
-
-	//Filter the array to ensure we're getting things that look like integers. Will also filter out blank array items (i.e. '' )
+	//Filter the array to ensure we're getting things that look like integers. Will also filter out blank array items
 	$idsarr = array_filter( $args['ids'], 'is_numeric' );
 
-	//count if this is a race (more than one progress bar being displayed. The race format can also be forced by passing "race" in the $class argument)
+	//count if this is a race (more than one progress bar being displayed. The race format can also be forced by passing "tdd_pb_race" in the $class argument)
 	$race = ( count( $idsarr ) > 1 ) ? 'tdd_pb_race' : '';
 
 	//Set up our global container
-	$return = '<div class="tdd_pb_global_container '.$race.' '. esc_attr( $args['class'] ).'" style="width:'. esc_attr(strip_tags( $args['width'] ) ).'">';
+	$return = '<div class="tdd_pb_global_container ' . $race . ' '. sanitize_html_class( $args['class'] );
+	$return .= '" style="width:' . esc_attr(strip_tags( $args['width'] ) ) . '">';
 
 	//If there are no ids to display, this is kind of a moot proccess - so let's say so:
 	if ( count( $idsarr ) <= 0 ){
-		$return .= '<p>' . __( 'No progress bars were set, so there is nothing to display', 'tdd_pb' ). '</p></div>';
+		$return .= '<p>' . __( 'No progress bars were set, so there is nothing to display', 'tdd_pb' ) . '</p></div>';
 		return $return;
 	}
 
@@ -232,7 +294,7 @@ function tdd_pb_get_bars( $args ){
 	$tdd_pb_query = new WP_Query();
 	$tdd_pb_query->query(array(
 		'post_type' => 'tdd_pb',
-		'posts_per_page' => -1,
+		'posts_per_page' => 20,
 		'post__in' => $idsarr,
 		'no_found_rows' => true,
 	));
@@ -241,52 +303,53 @@ function tdd_pb_get_bars( $args ){
 	if ( !$tdd_pb_query->have_posts() ) {
 		$return .= '<p>'. __( 'No progress bars found', 'tdd_pb' ) . '</p></div>';
 		return $return;
-		}
+	}
 
 	while ( $tdd_pb_query->have_posts() ): $tdd_pb_query->the_post();
-		$color = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_color', true ) );
-		$custom_color = tdd_pb_sanitize_color_hex_raw( get_post_meta( get_the_ID(), '_tdd_pb_custom_color', true ) );
-		$percentage = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_percentage', true ) );
-		$start = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_start', true ) );
-		$end = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_end', true ) );
-		$input_method = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_input_method', true ) );
-		$percentage_display = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_percentage_display', true ) );
-		$xofy_display = strip_tags( get_post_meta( get_the_ID(), '_tdd_pb_xofy_display', true ) );
+		$color              = get_post_meta( get_the_ID(), '_tdd_pb_color', true );
+		$custom_color       = get_post_meta( get_the_ID(), '_tdd_pb_custom_color', true );
+		$percentage         = get_post_meta( get_the_ID(), '_tdd_pb_percentage', true );
+		$start              = get_post_meta( get_the_ID(), '_tdd_pb_start', true );
+		$end                = get_post_meta( get_the_ID(), '_tdd_pb_end', true );
+		$input_method       = get_post_meta( get_the_ID(), '_tdd_pb_input_method', true );
+		$percentage_display = get_post_meta( get_the_ID(), '_tdd_pb_percentage_display', true );
+		$xofy_display       = get_post_meta( get_the_ID(), '_tdd_pb_xofy_display', true );
 
-		if ( $input_method == 'xofy' ){
+		//Get the calculated percentage
+		if ( $input_method == 'xofy' )
 			$calcpercentage = round( ($start/$end)*100, 2 );
-		} else {
+		else
 			$calcpercentage = $percentage;
-		}
 
 		//This filter allows you to hook in and modify the percentage, perhaps based on a fancy API call...
 		$calcpercentage = apply_filters( 'tdd_pb_calculated_percentage', $calcpercentage, get_the_ID() );
 
-		//if no color, define a default
-		$color = (!$color) ? $args['default_color'] : 'tdd_pb_'.$color;
+		//Fallback to default bar color
+		$color_class = ( $color ) ? sanitize_html_class( 'tdd_pb_' . $color ) : $args['default_color'];
 
-		$return .= '<div title="'.get_the_title() .': '. absint( $calcpercentage ).'%" class="tdd_pb_bar_container" style="background-color: #'. esc_attr( $tdd_pb_options["bar_background_color"] ) .'" role="progressbar" aria-valuenow="'. absint( $calcpercentage ).'" aria-valuemax="100" aria-valuemin="0">';
-		if ($tdd_pb_options['display_percentage']):
-			$return .= '<div class="tdd_pb_numbers" style="color: #'. esc_attr( $tdd_pb_options["percentage_color"] ).'">';
+		//Are we displaying text on the bar? Potentially... (there's a global setting that can override this)
+		$text_on_bar = '';
+		if ( $percentage_display == 'on' || $percentage_display === '' )
+			$text_on_bar .= absint( $calcpercentage ) .'%';
 
-			if ( $percentage_display == 'on' || $percentage_display === '' ){
-				$return .= absint( $calcpercentage ) .'%';
-			}
+		if ( $xofy_display == 'on' )
+			$text_on_bar .='&nbsp;&nbsp;' .intval( $start ) . ' ' . __( 'of', 'tdd_pb' ) . ' ' . intval( $end );
 
-			if ( $xofy_display == 'on' ){
-				$return .='&nbsp;&nbsp;' .intval( $start ) . ' ' . __( 'of', 'tdd_pb' ) . ' ' . intval( $end );
-			}
+		$barargs = array(
+			'percentage' => $calcpercentage,
+			'text_on_bar' => $text_on_bar,
+			'title' => get_the_title(),
+			'classes' => array(),
+			'width' => esc_attr( $args['width'] ),
+			'height' => esc_attr( $args['height'] ),
+			'color_class' => $color_class,
+			'custom_color' => tdd_pb_sanitize_color_hex_raw( $custom_color )
+			);
 
-			$return .='</div>';
-		endif;
-		if ( $custom_color ) {
-			$override_normal_css = 'background-color:#' . $custom_color;
-		} else {
-			$override_normal_css = '';
-		}
-		$return .= '<div class="tdd_pb_bar '. esc_attr( $color ) .'" style="width:'. absint( $calcpercentage ) .'%; ' . $override_normal_css . '"></div></div>';
+		$return .= tdd_pb_render_bar( $barargs );
 
 	endwhile;
+	wp_reset_postdata();
 
 	//Close the progress bar container, and return everything to screen.
 	$return .= '</div>';
