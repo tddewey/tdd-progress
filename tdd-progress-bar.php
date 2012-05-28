@@ -169,6 +169,7 @@ function tdd_pb_shortcode( $args ){
 		'ids' => '',
 		'width' => 'auto',
 		'class' => '',
+		'height' => '',
 		), $args );
 
 
@@ -182,6 +183,7 @@ function tdd_pb_shortcode( $args ){
 		'ids' => $idsarr,
 		'width' => $args['width'],
 		'class' => $args['class'],
+		'height' => $args['height']
 	));
 
 	//Return them bars
@@ -215,7 +217,7 @@ function tdd_pb_render_bar( $args ){
 		'title' => '',
 		'classes' => array(),
 		'width' => 'auto',
-		'height' => $tdd_pb_options['single_height'],
+		'height' => '',
 		'color_class' => 'tdd_pb_red',
 		'custom_color' => '',
 		) ) );
@@ -227,6 +229,8 @@ function tdd_pb_render_bar( $args ){
 
 	$container_styles = 'width: ' . esc_attr( $width ) . ';';
 	$container_styles .= ' background-color: #' . tdd_pb_sanitize_color_hex_raw( $tdd_pb_options["bar_background_color"] ) . ';';
+	if ( $height )
+		$container_styles .= ' height: ' . esc_attr( $height ) . ';';
 
 	$bar_classes = 'tdd_pb_bar ';
 	$bar_classes .= sanitize_html_class( $color_class );
@@ -234,8 +238,6 @@ function tdd_pb_render_bar( $args ){
 	$bar_styles = 'width: ' . absint( $percentage ) . '%;';
 	if ( $custom_color )
 		$bar_styles .= ' background-color: #' . tdd_pb_sanitize_color_hex_raw( $custom_color ) . ';';
-	if ( $height )
-		$bar_styles .= ' height: ' . esc_attr( $height ) . ';';
 
 
 	$return = '<div class="' . $container_classes . '" style="' . $container_styles . '" aria-valuemax="100" aria-valuemin="0" aria-valuenow="' . absint( $percentage ) . '" role="progressbar" title="' . esc_attr( $title ) . ': ' . absint( $percentage ) . '%">';
@@ -267,7 +269,7 @@ function tdd_pb_get_bars( $args ){
 	$args = wp_parse_args( $args, $defaults = array(
 		'ids' => array(),
 		'width' => 'auto',
-		'height' => '100%',
+		'height' => '',
 		'class' => '',
 		'default_color' => 'tdd_pb_red',
 		) );
@@ -278,6 +280,19 @@ function tdd_pb_get_bars( $args ){
 	$idsarr = array_filter( $args['ids'], 'is_numeric' );
 
 	//count if this is a race (more than one progress bar being displayed. The race format can also be forced by passing "tdd_pb_race" in the $class argument)
+	if ( count ( $idsarr ) > 1 ){
+		$race = 'tdd_pb_race';
+		if ( ! $args['height'] ){
+			$args['height'] = $tdd_pb_options['race_height'] . 'px';
+		}
+	} else {
+		$race = '';
+		if ( ! $args['height'] ){
+			$args['height'] = $tdd_pb_options['single_height'] . 'px';
+		}
+	}
+
+
 	$race = ( count( $idsarr ) > 1 ) ? 'tdd_pb_race' : '';
 
 	//Set up our global container
@@ -316,10 +331,13 @@ function tdd_pb_get_bars( $args ){
 		$xofy_display       = get_post_meta( get_the_ID(), '_tdd_pb_xofy_display', true );
 
 		//Get the calculated percentage
-		if ( $input_method == 'xofy' )
-			$calcpercentage = round( ($start/$end)*100, 2 );
-		else
+		if ( $input_method == 'xofy' && $end > 0 ){
+			$start = intval( $start );
+			$end = intval( $end );
+			$calcpercentage = round( $start/$end*100, 2 );
+		} else {
 			$calcpercentage = $percentage;
+		}
 
 		//This filter allows you to hook in and modify the percentage, perhaps based on a fancy API call...
 		$calcpercentage = apply_filters( 'tdd_pb_calculated_percentage', $calcpercentage, get_the_ID() );

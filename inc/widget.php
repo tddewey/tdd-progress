@@ -97,7 +97,7 @@ class TDD_Progress_Widget extends WP_Widget {
 		if ( !empty($title) ){ echo $before_title . sanitize_text_field( $title ) . $after_title; }
 
 		$args = array(
-			'ids' => array_map( 'absint', $instance['ids'] ),
+			'ids' => array_map( 'absint', (array) $instance['ids'] ),
 			);
 
 		echo tdd_pb_get_bars( $args );

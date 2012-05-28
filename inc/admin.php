@@ -26,6 +26,26 @@ function tdd_pb_metabox_create() {
 }
 add_action( 'add_meta_boxes', 'tdd_pb_metabox_create' );
 
+/**
+ * Load the miniColors color picker scripts
+ */
+function enqueue_mini_colors( $hook ) {
+	if ( 'post.php' == $hook || 'tdd_pb_page_settings' == $hook ){
+		wp_enqueue_script( 'minicolors', plugins_url( 'js/miniColors/jquery.miniColors.js', dirname( __FILE__ ) ), array( 'jquery' ), '1', true );
+		wp_enqueue_style( 'minicolors', plugins_url( 'js/miniColors/jquery.miniColors.css', dirname( __FILE__ ) ), false, '1' );
+	}
+}
+add_action( 'admin_enqueue_scripts', 'enqueue_mini_colors' );
+
+/**
+ * Instantiate the minicolors scripts
+ */
+function instantiate_mini_colors(){
+	echo '<script>jQuery(".color").focus(function(){ jQuery(this).miniColors(); });</script>';
+}
+add_action( 'admin_footer-tdd_pb_page_settings', 'instantiate_mini_colors' );
+add_action( 'admin_footer-post.php', 'instantiate_mini_colors' );
+
 
 /**
  * Meta box display for the Progress Bar post type.
@@ -93,7 +113,7 @@ function tdd_pb_metabox_display( $post ) {
 				<?php endforeach; ?>
 				</select>
 
-				<label for="tdd_pb_custom_color">or custom: #</label>
+				<label for="tdd_pb_custom_color">or custom: </label>
 				<input type="text" class="color" name="tdd_pb_custom_color" id="tdd_pb_custom_color" size="6" value="<?php echo $tdd_pb_custom_color; ?>">
 			</td>
 		</tr>
@@ -143,6 +163,7 @@ function tdd_pb_metabox_display( $post ) {
 	<?php echo tdd_pb_get_bars( array(
 			'ids' => array( get_the_ID() ),
 			'class' => 'tdd_pb_race',
+			'height' => '25px'
 		) );
 
 ?>
@@ -225,6 +246,7 @@ function tdd_pb_custom_columns( $column ) {
 		echo tdd_pb_get_bars( array(
 				'ids' => array( $post->ID ),
 				'class' => 'tdd_pb_race',
+				'height' => '25px'
 			) );
 
 		break;
@@ -408,9 +430,9 @@ class TDD_PB_Admin_Settings {
 
 	}
 
-	function get_options(){
-		$options = get_option('tdd_pb_options');
-
+	function get_options( $options = '' ){
+		if ( !$options )
+			$options = get_option('tdd_pb_options');
 		$mergedoptions = wp_parse_args( $options, array(
 			'animate' => true,
 			'default_css' => true,
@@ -449,7 +471,7 @@ class TDD_PB_Admin_Settings {
 		//TODO: For all these color options, implement a color picker.
 		$options = $this->get_options();
 		?>
-		#<input name="tdd_pb_options[bar_background_color]" id="bar_backround_color" type="text" value="<?php echo tdd_pb_sanitize_color_hex_raw( $options['bar_background_color'] ); ?>" size="6" />
+		<input name="tdd_pb_options[bar_background_color]" id="bar_backround_color" type="text" value="<?php echo tdd_pb_sanitize_color_hex_raw( $options['bar_background_color'] ); ?>" size="6" class="color" />
 		<?php
 	}
 
@@ -484,7 +506,7 @@ class TDD_PB_Admin_Settings {
 	function setting_percentage_color() {
 		$options = $this->get_options();
 		?>
-		#<input name="tdd_pb_options[percentage_color]" id="percentage_color" type="text" value="<?php echo tdd_pb_sanitize_color_hex_raw( $options['percentage_color'] ); ?>" size="6" />
+		<input name="tdd_pb_options[percentage_color]" id="percentage_color" class="color" type="text" value="<?php echo tdd_pb_sanitize_color_hex_raw( $options['percentage_color'] ); ?>" size="6" />
 		<?php
 	}
 
@@ -496,12 +518,30 @@ class TDD_PB_Admin_Settings {
 		$output['default_css'] =  isset( $input['default_css'] ) ? true : false;
 
 		//Sanitize other options
-		$output['bar_background_color'] = tdd_pb_sanitize_color_hex_raw( $input['bar_background_color'] );
-		$output['single_height'] = absint( $input['single_height'] );
-		$output['race_height'] = absint( $input['race_height'] );
-		$output['percentage_color'] = tdd_pb_sanitize_color_hex_raw( $input['percentage_color'] );
+		if ( ! empty( $input['bar_background_color'] ) )
+			$output['bar_background_color'] = tdd_pb_sanitize_color_hex_raw( $input['bar_background_color'] );
+		else
 
-		return $output;
+			unset( $output['bar_background_color'] );
+
+		if ( ! empty( $input['single_height'] ) )
+			$output['single_height'] = absint( $input['single_height'] );
+		else
+			unset( $output['single_height'] );
+
+		if ( ! empty( $input['race_height'] ) )
+			$output['race_height'] = absint( $input['race_height'] );
+		else
+			unset( $output['race_height'] );
+
+		if ( ! empty( $input['percentage_color'] ) )
+			$output['percentage_color'] = tdd_pb_sanitize_color_hex_raw( $input['percentage_color'] );
+		else
+			unset( $output['percentage_color'] );
+
+		//We now need to set all the array indexes that are blank to their default values.
+		$mergedoutput = $this->get_options( $output );
+		return $mergedoutput;
 	}
 
 }
