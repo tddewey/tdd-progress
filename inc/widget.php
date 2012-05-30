@@ -69,7 +69,7 @@ class TDD_Progress_Widget extends WP_Widget {
 				?>
 			</select><br>
 			<script>jQuery(".chzn-select").chosen();</script> <?php /* This entire form is ajax refreshed, putting the call here makes it stay bound on-save */ ?>
-			<small>Maximum of 20 will be shown in one block</small>
+			<small>Maximum of 100, but that's a crazy-large amount, don't you think?</small>
 			<!--<input class="widefat" id="<?php echo $this->get_field_id( 'ids' ); ?>" name="<?php echo $this->get_field_name( 'ids' ); ?>" type="text" value="<?php echo esc_attr( $ids ); ?>" /><br><small>Comma separated</small>--></p>
 
 		<p>

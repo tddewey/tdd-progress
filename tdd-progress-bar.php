@@ -10,35 +10,6 @@ Licence: GPLv3
 */
 
 /*
-		global options:
-			- animate (on/off) - default=on
-			- use default CSS (on/off) - default=on
-			- bar background-color - default=#333;
-			- display percentage - default=true
-			- percentage color - default=#ececec;
-
-		shortcode options:
-			- race height (if multiple ID's involved)
-			- width
-
-		bar specific options:
-			- color/graphic
-			- percentage (or API call)
-
-
-		@todo:
-			make a variety of the colored bars. Assemble into a sprite and work-in above. Only need the width to be long enough to feel random. Blend the seam.
-
-			Global options page
-
-			Page to add progress bars.
-				- Name
-				- Bar style
-				- Perecentage / or API call.
-
-*/
-
-/*
 * set up text domain
 */
 function tdd_pb_loadtextdomain(){
@@ -309,7 +280,7 @@ function tdd_pb_get_bars( $args ){
 	$tdd_pb_query = new WP_Query();
 	$tdd_pb_query->query(array(
 		'post_type' => 'tdd_pb',
-		'posts_per_page' => 20,
+		'posts_per_page' => 100,
 		'post__in' => $idsarr,
 		'no_found_rows' => true,
 	));
@@ -367,7 +338,6 @@ function tdd_pb_get_bars( $args ){
 		$return .= tdd_pb_render_bar( $barargs );
 
 	endwhile;
-	wp_reset_postdata();
 
 	//Close the progress bar container, and return everything to screen.
 	$return .= '</div>';
