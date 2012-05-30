@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: progress, shortcode, widget
 Requires at least: 3.3
 Tested up to: 3.3.1
-Stable tag: 0.5
+Stable tag: 0.5.1
 
 Configure and display any number of percent-complete progress bars.
 
@@ -61,6 +61,10 @@ Note that "id" and "ids" are interchangeable
 Or use the widget which allows you to pick bars to display
 
 == Changelog ==
+
+= 0.5.1 =
+* Fixed an issue where all the shortcodes in the Progress Bar Administration Panel were displaying the same.
+* Now allows for two digit precision floating numbers on percentages inputed, calculated, and the start/end values.
 
 = 0.5 =
 * UPGRADE NOTICE: Because of the change to how bars in the widget are selected and stored your widgets will not display properly until you re-configure them. Sorry for any inconvenience, but I thought the new interface was totally worth it.
