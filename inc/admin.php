@@ -75,10 +75,10 @@ function tdd_pb_metabox_display( $post ) {
 			$tdd_pb_input_method = 'percentage';
 	}
 
-	$tdd_pb_percentage = absint( get_post_meta( $post->ID, '_tdd_pb_percentage', true ) );
+	$tdd_pb_percentage = floatval( get_post_meta( $post->ID, '_tdd_pb_percentage', true ) );
 	$tdd_pb_custom_color = tdd_pb_sanitize_color_hex_raw( get_post_meta( $post->ID, '_tdd_pb_custom_color', true ) );
-	$tdd_pb_start = intval( get_post_meta( $post->ID, '_tdd_pb_start', true ) );
-	$tdd_pb_end = intval( get_post_meta( $post->ID, '_tdd_pb_end', true ) );
+	$tdd_pb_start = floatval( get_post_meta( $post->ID, '_tdd_pb_start', true ) );
+	$tdd_pb_end = floatval( get_post_meta( $post->ID, '_tdd_pb_end', true ) );
 
 	if ( $percentage_display = get_post_meta( $post->ID, '_tdd_pb_percentage_display', true ) ){
 		$whitelist = array( 'on', 'off' );
@@ -129,15 +129,15 @@ function tdd_pb_metabox_display( $post ) {
 								<label><input name="tdd_pb_input_method" type="radio" <?php checked( $tdd_pb_input_method, 'percentage' ); ?> value="percentage" > <?php _e( 'Percentage', 'tdd_pb' ); ?></label>
 							</td>
 							<td>
-								<input name="tdd_pb_percentage" type="text" size="2" value="<?php echo esc_attr( $tdd_pb_percentage ); ?>"> %							</td>
+								<input name="tdd_pb_percentage" type="text" size="2" value="<?php echo round( floatval( $tdd_pb_percentage ), 2 ); ?>"> %							</td>
 						</tr>
 						<tr valign="top">
 							<td>
 								<label><input name="tdd_pb_input_method" type="radio" <?php checked( $tdd_pb_input_method, 'xofy' ); ?> value="xofy" > <?php _e( 'Calculate Percentage (x of y)', 'tdd_pb' ); ?></label>
 							</td>
 							<td>
-								<input name="tdd_pb_start" type="text" size="10" value="<?php echo esc_attr( $tdd_pb_start ); ?>"> <?php _e( 'of', 'tdd_pb' ); ?>
-								<input name="tdd_pb_end" type="text" size="10" value="<?php echo esc_attr( $tdd_pb_end ); ?>"><br />
+								<input name="tdd_pb_start" type="text" size="10" value="<?php echo round( floatval( $tdd_pb_start ), 2 ); ?>"> <?php _e( 'of', 'tdd_pb' ); ?>
+								<input name="tdd_pb_end" type="text" size="10" value="<?php echo round( floatval( $tdd_pb_end ), 2 ); ?>"><br />
 								<span class="description"><?php _e( "Numbers only, don't include units", 'tdd_pb' ); ?></span>
 							</td>
 						</tr>
@@ -185,15 +185,15 @@ function tdd_pb_metabox_save( $post_id ) {
 		delete_post_meta( $post_id, '_tdd_pb_custom_color' );
 
 	if ( isset( $_POST['tdd_pb_percentage'] ) ) {
-		update_post_meta( $post_id, '_tdd_pb_percentage', absint( $_POST['tdd_pb_percentage'] ) );
+		update_post_meta( $post_id, '_tdd_pb_percentage', abs( floatval( $_POST['tdd_pb_percentage'] ) ) );
 	}
 
 	if ( isset( $_POST['tdd_pb_start'] ) ) {
-		update_post_meta( $post_id, '_tdd_pb_start', intval( $_POST['tdd_pb_start'] ) );
+		update_post_meta( $post_id, '_tdd_pb_start', floatval( $_POST['tdd_pb_start'] ) );
 	}
 
 	if ( isset( $_POST['tdd_pb_end'] ) ) {
-		update_post_meta( $post_id, '_tdd_pb_end', intval( $_POST['tdd_pb_end'] ) );
+		update_post_meta( $post_id, '_tdd_pb_end', floatval( $_POST['tdd_pb_end'] ) );
 	}
 
 	if ( isset( $_POST['tdd_pb_input_method'] ) ){

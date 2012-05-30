@@ -206,12 +206,12 @@ function tdd_pb_render_bar( $args ){
 	$bar_classes = 'tdd_pb_bar ';
 	$bar_classes .= sanitize_html_class( $color_class );
 
-	$bar_styles = 'width: ' . absint( $percentage ) . '%;';
+	$bar_styles = 'width: ' . floatval( $percentage ) . '%;';
 	if ( $custom_color )
 		$bar_styles .= ' background-color: #' . tdd_pb_sanitize_color_hex_raw( $custom_color ) . ';';
 
 
-	$return = '<div class="' . $container_classes . '" style="' . $container_styles . '" aria-valuemax="100" aria-valuemin="0" aria-valuenow="' . absint( $percentage ) . '" role="progressbar" title="' . esc_attr( $title ) . ': ' . absint( $percentage ) . '%">';
+	$return = '<div class="' . $container_classes . '" style="' . $container_styles . '" aria-valuemax="100" aria-valuemin="0" aria-valuenow="' . round( floatval( $percentage ), 2 ) . '" role="progressbar" title="' . esc_attr( $title ) . ': ' . round( floatval( $percentage ), 2 ) . '%">';
 
 	//display percentage option is now a global control to show text on the bar (percentage or xofy). Name is for back compat
 	if ($tdd_pb_options['display_percentage']){
@@ -303,8 +303,8 @@ function tdd_pb_get_bars( $args ){
 
 		//Get the calculated percentage
 		if ( $input_method == 'xofy' && $end > 0 ){
-			$start = intval( $start );
-			$end = intval( $end );
+			$start = floatval( $start );
+			$end = floatval( $end );
 			$calcpercentage = round( $start/$end*100, 2 );
 		} else {
 			$calcpercentage = $percentage;
@@ -319,7 +319,7 @@ function tdd_pb_get_bars( $args ){
 		//Are we displaying text on the bar? Potentially... (there's a global setting that can override this)
 		$text_on_bar = '';
 		if ( $percentage_display == 'on' || $percentage_display === '' )
-			$text_on_bar .= absint( $calcpercentage ) .'%';
+			$text_on_bar .= round( floatval( $calcpercentage ), 2 ) .'%';
 
 		if ( $xofy_display == 'on' )
 			$text_on_bar .='&nbsp;&nbsp;' .intval( $start ) . ' ' . __( 'of', 'tdd_pb' ) . ' ' . intval( $end );
