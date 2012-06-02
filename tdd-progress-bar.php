@@ -3,7 +3,7 @@
 Plugin Name: TDD Progress Bars
 Plugin URI: http://github.com/tddewey/tdd-progress
 Description: Manage and display progress bars
-Version: 0.5.1
+Version: 0.5.2
 Author: Taylor D. Dewey
 Author URI: http://websitesthatdontsuck.com
 Licence: GPLv3
@@ -43,9 +43,9 @@ function tdd_pb_install() {
 */
 function tdd_pb_load_styles() {
 	if (WP_DEBUG) {
-		wp_enqueue_style( 'tdd_pb_style', plugins_url( 'css/default.css', __FILE__ ), '', '.3' );
+		wp_enqueue_style( 'tdd_pb_style', plugins_url( 'css/default.css', __FILE__ ), '', '.5.2' );
 	} else {
-		wp_enqueue_style( 'tdd_pb_style', plugins_url( 'css/default.min.css', __FILE__ ), '', '.3' );
+		wp_enqueue_style( 'tdd_pb_style', plugins_url( 'css/default.min.css', __FILE__ ), '', '.5.2' );
 	}
 }
 
@@ -147,7 +147,7 @@ function tdd_pb_shortcode( $args ){
 	//explode "id" and "ids" on their commas separately, then merge the arrays together
 	$idarr = explode( ',', $args['id'] );
 	$idsarr = explode( ',', $args['ids'] );
-	$idsarr = array_merge($idarr, $idsarr);
+	$idsarr = array_merge( $idarr, $idsarr );
 
 	//Request some bars
 	$return = tdd_pb_get_bars(array(
